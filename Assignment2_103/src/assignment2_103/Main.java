@@ -9,7 +9,7 @@ package assignment2_103;
  *
  * @author maxhi
  */
-public class Assignment2_103 {
+public class Main {
 
     /**
      * @param args the command line arguments
@@ -19,7 +19,7 @@ public class Assignment2_103 {
      */
     public static void main(String[] args) 
     {
-       HotelDBManager hoteldb = new HotelDBManager();
+       /*HotelDBManager hoteldb = new HotelDBManager();
        System.out.println(hoteldb.getConnection());
        HotelDB db = new HotelDB();
        db.createAccountsTable();
@@ -29,17 +29,9 @@ public class Assignment2_103 {
        db.addAccountToTable(jason);
        db.addRoomToTable(testRoom);
         
-       hoteldb.closeConnections();
+       hoteldb.closeConnections();*/
         
-        //Code to run the GUI as I used a GUI builder.
-
-        java.awt.EventQueue.invokeLater(new Runnable() 
-        {
-            public void run() 
-            {
-                new MainMenuView().setVisible(true);
-            }
-        });
+       ViewMenu view = new ViewMenu();
        
     }
     
