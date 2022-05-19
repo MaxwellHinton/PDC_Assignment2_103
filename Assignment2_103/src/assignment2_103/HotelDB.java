@@ -21,6 +21,7 @@ public class HotelDB
     HotelDBManager dbManager;
     Connection conn;
     Statement statement;
+    String URL = "";
     
     public HotelDB() 
     {
