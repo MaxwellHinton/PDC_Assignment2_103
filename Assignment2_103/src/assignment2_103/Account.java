@@ -11,14 +11,29 @@ package assignment2_103;
  */
 public class Account implements AccountInfo
 {
-    private final String firstName;
-    private final String surname;
-    private final String email;
+    private String firstName;
+    private String surname;
+    private String email;
     
     public Account(final String firstname, final String lastname, final String email)
     {
         this.firstName = firstname;
         this.surname = lastname;
+        this.email = email;
+    }
+    
+    public void setFirstname(String firstname)
+    {
+        this.firstName = firstname;
+    }
+    
+    public void setSurname(String surname)
+    {
+        this.surname = surname;
+    }
+    
+    public void setEmail(String email)
+    {
         this.email = email;
     }
     

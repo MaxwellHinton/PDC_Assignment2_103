@@ -10,18 +10,23 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  *
  * @author maxhi
  */
-public class ViewMain extends JFrame
+public class ViewMain extends JFrame implements ActionListener
 {
    //All main panels
     
@@ -36,11 +41,28 @@ public class ViewMain extends JFrame
     
     //All components for main menu
     
-    private JButton createAccountBtn = new JButton("Create an Account");
     private JLabel mainTitle = new JLabel("Welcome to the Hotel Reservation System");
+    private JButton createAccountBtn = new JButton("Create an Account");
     private JButton reserveRoomBtn = new JButton("Reserve a room");
     private JButton adminBtn = new JButton("Administrator Menu");
     private JButton exitBtn = new JButton("Exit");
+    
+    //All components for reserving room menu
+    
+    private JLabel reserveRoomTitle = new JLabel("Reserving a room");
+    private static final Map<String, Room> rooms = new HashMap<String, Room>();
+    
+    
+    //All components for creating account menu
+    
+    private JLabel createAccountTitle = new JLabel("Create your account");
+    private JTextField firstname = new JTextField("Type here: ");
+    private JTextField surname = new JTextField();
+    private JTextField email = new JTextField();
+    private JLabel firstnamePrompt = new JLabel("Firstname:");
+    private JLabel surnamePrompt = new JLabel("Surname:");
+    private JLabel emailPrompt = new JLabel("Email:");
+    private JButton confirmAccount = new JButton("Create account");
     
     //All components for admin menu
     
@@ -48,7 +70,11 @@ public class ViewMain extends JFrame
     private JButton regRoomBtn = new JButton("Register a Room");
     private JButton displayAccountsBtn = new JButton("Display all Accounts");
     private JButton displayRoomsBtn = new JButton("Display all rooms");
-    private JButton exitMainBtn = new JButton("Exit to main menu");
+
+    //Other components
+    
+    private JButton exitToMainBtn = new JButton("Exit to main menu");
+    
     
     public ViewMain()
     {
@@ -58,9 +84,9 @@ public class ViewMain extends JFrame
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBackground(Color.LIGHT_GRAY);
         
-        mainTitle.setFont(new Font("Serif", Font.PLAIN, 20));
+        mainTitle.setFont(new Font("Serif", Font.PLAIN, 25));
         mainTitle.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
-        mainTitle.setMaximumSize(new Dimension(340, 200));
+        mainTitle.setMaximumSize(new Dimension(460, 200));
         mainTitle.setForeground(Color.black);
         
         reserveRoomBtn.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
@@ -72,16 +98,36 @@ public class ViewMain extends JFrame
         createAccountBtn.setMaximumSize(new Dimension(200, 35));
         createAccountBtn.setBackground(Color.DARK_GRAY);
         createAccountBtn.setForeground(Color.WHITE);
+        
+        createAccountBtn.addActionListener(new ActionListener(){
+            
+            public void actionPerformed(ActionEvent e)
+            {
+                createAccountView();
+            }
+            
+        });
                
         adminBtn.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
         adminBtn.setMaximumSize(new Dimension(200, 35));
         adminBtn.setBackground(Color.DARK_GRAY);
         adminBtn.setForeground(Color.WHITE);
         
+        adminBtn.addActionListener(new ActionListener(){
+            
+            public void actionPerformed(ActionEvent e)
+            {
+                ViewAdmin();
+            }
+            
+        });
+        
         exitBtn.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
         exitBtn.setMaximumSize(new Dimension(200, 35));
         exitBtn.setBackground(Color.DARK_GRAY);
         exitBtn.setForeground(Color.WHITE);
+        
+        exitBtn.addActionListener(this);
         
         mainPanel.add(mainTitle);
         mainPanel.add(reserveRoomBtn);
@@ -95,12 +141,12 @@ public class ViewMain extends JFrame
     
     public void ViewAdmin()
     {
-        adminPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        adminPanel.setLayout(new BoxLayout(adminPanel, BoxLayout.Y_AXIS));
         adminPanel.setBackground(Color.LIGHT_GRAY);
         
-        adminTitle.setFont(new Font("Serif", Font.PLAIN, 20));
+        adminTitle.setFont(new Font("Serif", Font.PLAIN, 30));
         adminTitle.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
-        adminTitle.setMaximumSize(new Dimension(340, 200));
+        adminTitle.setMaximumSize(new Dimension(250, 200));
         adminTitle.setForeground(Color.black);
         
         regRoomBtn.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
@@ -118,40 +164,145 @@ public class ViewMain extends JFrame
         displayRoomsBtn.setBackground(Color.DARK_GRAY);
         displayRoomsBtn.setForeground(Color.WHITE);
         
-        exitMainBtn.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
-        exitMainBtn.setMaximumSize(new Dimension(200, 35));
-        exitMainBtn.setBackground(Color.DARK_GRAY);
-        exitMainBtn.setForeground(Color.WHITE);
+        exitToMainBtn.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
+        exitToMainBtn.setMaximumSize(new Dimension(200, 35));
+        exitToMainBtn.setBackground(Color.DARK_GRAY);
+        exitToMainBtn.setForeground(Color.WHITE);
+        exitToMainBtn.addActionListener(this);
         
         adminPanel.add(adminTitle);
         adminPanel.add(regRoomBtn);
         adminPanel.add(displayAccountsBtn);
         adminPanel.add(displayRoomsBtn);
-        adminPanel.add(exitMainBtn);
+        adminPanel.add(exitToMainBtn);
         
         this.getContentPane().removeAll();
-        adminPanel.setVisible(true);
+        
         this.add(adminPanel);
+        adminPanel.setVisible(true);
         this.revalidate();
         this.repaint();
         
     }
     
+    public void reserveRoomView()
+    {
+        reserveRoomPanel.setLayout(new BoxLayout(createAccountPanel, BoxLayout.Y_AXIS));
+        reserveRoomPanel.setBackground(Color.LIGHT_GRAY);
+        
+        
+        
+    }
+    
+    public void createAccountView()
+    {
+        createAccountPanel.setLayout(new BoxLayout(createAccountPanel, BoxLayout.Y_AXIS));
+        createAccountPanel.setBackground(Color.LIGHT_GRAY);
+        
+        createAccountTitle.setFont(new Font("Serif", Font.PLAIN, 30));
+        createAccountTitle.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
+        createAccountTitle.setMaximumSize(new Dimension(250, 150));
+        createAccountTitle.setForeground(Color.black);
+        
+        firstnamePrompt.setAlignmentX(createAccountPanel.CENTER_ALIGNMENT);
+        firstnamePrompt.setMaximumSize(new Dimension(100, 35));
+        firstnamePrompt.setForeground(Color.BLACK);
+        
+        surnamePrompt.setAlignmentX(createAccountPanel.CENTER_ALIGNMENT);
+        surnamePrompt.setMaximumSize(new Dimension(100, 35));
+        surnamePrompt.setForeground(Color.BLACK);
+        
+        emailPrompt.setAlignmentX(createAccountPanel.CENTER_ALIGNMENT);
+        emailPrompt.setMaximumSize(new Dimension(100, 35));
+        emailPrompt.setForeground(Color.BLACK);
+        
+        firstname.setAlignmentX(createAccountPanel.CENTER_ALIGNMENT);
+        firstname.setMaximumSize(new Dimension(200, 35));
+        firstname.setBackground(Color.DARK_GRAY);
+        firstname.setForeground(Color.WHITE);
+        
+        surname.setAlignmentX(createAccountPanel.CENTER_ALIGNMENT);
+        surname.setMaximumSize(new Dimension(200, 35));
+        surname.setBackground(Color.DARK_GRAY);
+        surname.setForeground(Color.WHITE);
+        
+        email.setAlignmentX(createAccountPanel.CENTER_ALIGNMENT);
+        email.setMaximumSize(new Dimension(200, 35));
+        email.setBackground(Color.DARK_GRAY);
+        email.setForeground(Color.WHITE);
+        
+        confirmAccount.setAlignmentX(createAccountPanel.CENTER_ALIGNMENT);
+        confirmAccount.setMaximumSize(new Dimension(200, 35));
+        confirmAccount.setBackground(Color.DARK_GRAY);
+        confirmAccount.setForeground(Color.WHITE);
+        
+        exitToMainBtn.setAlignmentX(createAccountPanel.CENTER_ALIGNMENT);
+        exitToMainBtn.setMaximumSize(new Dimension(200, 35));
+        exitToMainBtn.setBackground(Color.DARK_GRAY);
+        exitToMainBtn.setForeground(Color.WHITE);
+        
+        exitToMainBtn.addActionListener(this);
+        
+        
+        createAccountPanel.add(createAccountTitle);
+        createAccountPanel.add(firstnamePrompt);
+        createAccountPanel.add(firstname);
+        createAccountPanel.add(surnamePrompt);
+        createAccountPanel.add(surname);
+        createAccountPanel.add(emailPrompt);
+        createAccountPanel.add(email);
+        createAccountPanel.add(Box.createRigidArea(new Dimension(200, 25)));
+        createAccountPanel.add(confirmAccount);
+        createAccountPanel.add(Box.createRigidArea(new Dimension(200, 25)));
+        createAccountPanel.add(exitToMainBtn);
+        
+        this.getContentPane().removeAll();
+        this.add(createAccountPanel);
+        this.revalidate();
+        this.repaint();
+    }
+    
+    public void actionPerformed(ActionEvent e)
+    {
+        
+        if(e.getActionCommand().equals("Exit to main menu"))
+        {
+            backToMain();
+        }
+        else if(e.getActionCommand().equals("Exit"))
+        {
+            System.out.println("Saving account to database...");
+            //Save accounts to database
+            System.out.println("System exiting.");
+            System.exit(0);
+        }
+    }
+    
+    
     public void addActionListener(ActionListener listener)
     {
         //main menu listeners
    
-        this.reserveRoomBtn.addActionListener(listener);
+       // this.reserveRoomBtn.addActionListener(listener);
         this.createAccountBtn.addActionListener(listener);
         this.adminBtn.addActionListener(listener);
         this.exitBtn.addActionListener(listener);
         
         //admin menu listeners
         
+        
         this.regRoomBtn.addActionListener(listener);
         this.displayAccountsBtn.addActionListener(listener);
         this.displayRoomsBtn.addActionListener(listener);
-        this.exitMainBtn.addActionListener(listener);
+        this.exitToMainBtn.addActionListener(listener);
+    }
+    
+    public void backToMain()
+    {
+        this.getContentPane().removeAll();
+        this.getContentPane().add(mainPanel);
+        this.validate();
+        this.repaint();
     }
     
     

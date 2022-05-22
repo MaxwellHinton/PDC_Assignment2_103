@@ -5,6 +5,8 @@
  */
 package assignment2_103;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 
 /**
@@ -14,11 +16,38 @@ import java.util.Observable;
 public class Model extends Observable
 {
     public HotelDB db;
+    public String email;
+
+    private Map<String, Room> rooms = new HashMap<String, Room>();
     
     
     public Model()
     {
         this.db = new HotelDB();
-        this.db.
+        this.db.hoteldbSetup();
+    }
+    
+    public void checkAccount(Account acc)
+    {
+        if(db.checkAccount(acc))
+        {
+            //
+        }
+        
+    }
+
+    private void reserveRoom() 
+    {
+        
+    }
+    
+    private void getAllRooms()
+    {
+        rooms = db.getAllAvailableRooms();
+        
+        if(rooms.isEmpty())
+        {
+            System.out.println("No rooms are in the system.");
+        }
     }
 }

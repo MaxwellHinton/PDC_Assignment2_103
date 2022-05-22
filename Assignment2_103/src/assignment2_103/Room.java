@@ -35,6 +35,11 @@ public class Room implements RoomInfo
     {
         this.customer = customer.getEmail();
     }
+    
+    public void setCustomerByEmail(String email)
+    {
+        this.customer = email;
+    }
 
     @Override
     public String getRoomNumber() 

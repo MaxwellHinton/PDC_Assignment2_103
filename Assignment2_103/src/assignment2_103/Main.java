@@ -32,8 +32,9 @@ public class Main {
        hoteldb.closeConnections();*/
         
        ViewMain view = new ViewMain();
-       Controller control = new Controller(view);
-       control.
+       Model model = new Model();
+       //Controller control = new Controller(view);
+       
     }
     
 }
