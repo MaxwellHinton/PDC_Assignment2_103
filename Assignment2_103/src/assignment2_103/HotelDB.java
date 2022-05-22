@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -39,6 +40,8 @@ public class HotelDB
             String accountsTable = "ACCOUNTS";
             String roomsTable = "ROOMS";
             
+            statement.executeUpdate("DROP TABLE ROOMS");
+            statement.executeUpdate("DROP TABLE ACCOUNTS");
             //Make Accounts table if doesnt exist
             if (!checkExistingTable(accountsTable)) 
             {
@@ -52,25 +55,6 @@ public class HotelDB
                 System.out.println("Rooms table has been created successfully.");
             }
 
-            statement.close();
-            
-            Room roomTest = new Room("3", RoomType.DOUBLE, 150.00);
-            
-            Account accountTest = new Account("Max", "Hinton", "maxhinton1003@gmail.com");
-            Account accountTest2 = new Account("John", "Man", "johnman@gmail.com");
-            
-            addRoomToDB(roomTest);
-            addAccountToDB(accountTest);
-            addAccountToDB(accountTest2);
-            
-            boolean testing = checkAccount(accountTest);
-            System.out.println(testing);
-            boolean testRoomExists = checkRoom(roomTest);
-            System.out.println(testRoomExists);
-            
-            boolean testReserving = reserveRoom(accountTest, roomTest);
-            System.out.println(testReserving);
-            
             allAccounts = this.getAllAccounts();
             
             if(allAccounts.isEmpty())
@@ -95,10 +79,11 @@ public class HotelDB
                 for(String room : allRooms.keySet())
                 {
                     System.out.println(allRooms.get(room).toString());
+                    System.out.println(allRooms.get(room).getStatus() + " CUSTOMER: " + allRooms.get(room).getCustomer());
+                    System.out.println("------------------------");
                 }
             }
-            
-            System.out.println(accountTest.);
+
         }
             
         catch (Throwable e) 
@@ -114,45 +99,52 @@ public class HotelDB
         String email;
         Account acc = new Account(null, null, null);
         
-        try
+        if(checkAccount(account)) //Make sure acc exists
         {
-            String sql = "SELECT * FROM ACCOUNTS";
-            Statement statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery(sql);
-            
-            if(rs.next())
+            try
             {
-                do
-                {
-                    if(checkAccount(account))
-                    {
-                        firstname = rs.getString(1);
-                        surname = rs.getString(2);
-                        email = rs.getString(3);
-                        
-                        acc.setFirstname(firstname);
-                        acc.setSurname(surname);
-                        acc.setEmail(email);
-                        
-                        break;
-                    }
+                String sql = "SELECT * FROM ACCOUNTS";
+                Statement statement = conn.createStatement();
+                ResultSet rs = statement.executeQuery(sql);
 
-                }while(rs.next());
+                if(rs.next())
+                {
+                    do
+                    {
+                        if(account.getEmail().equals(rs.getString(3)))
+                        {
+                            firstname = rs.getString(1);
+                            surname = rs.getString(2);
+                            email = rs.getString(3);
+
+                            acc.setFirstname(firstname);
+                            acc.setSurname(surname);
+                            acc.setEmail(email);
+
+                            break;
+                        }
+
+                    }while(rs.next());
+                }
+
+                statement.close();
             }
-            
-            statement.close();
+            catch(SQLException e)
+            {
+                System.out.println(e.getMessage());
+            }
         }
-        catch(SQLException e)
+        else
         {
-            System.out.println(e.getMessage());
+            System.out.println("Account you are asking for does not exist");
         }
-        
         return acc;
     }
     
     public Room getRoomDB(Room room)
     {
-        Room rm = new Room(null, null, 0);       
+        Room rm = new Room(null, null, 0);     
+        
         String roomNumber;      
         RoomType type; 
         String roomType;
@@ -160,46 +152,59 @@ public class HotelDB
         boolean status = false;
         String customer;
         
-        try
+        if(checkRoom(room))
         {
-            String sql = "SELECT * FROM ROOMS";
-            Statement statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery(sql);
-            
-            if(rs.next())
+            try
             {
-                do
+                String sql = "SELECT * FROM ROOMS";
+                Statement statement = conn.createStatement();
+                ResultSet rs = statement.executeQuery(sql);
+
+                if(rs.next())
                 {
-                    if(checkRoom(room))
+                    do
                     {
-                        
-                        roomNumber = rs.getString(1);
-                        roomType = rs.getString(2);
-                        price = rs.getDouble(3);
-                        status = rs.getBoolean(4);
-                        customer = rs.getString(5);
-                        
-
-                        if("SINGLE".equals(roomType))
+                        if(room.getRoomNumber().equals(rs.getString(1)))
                         {
-                            type = RoomType.SINGLE;
-                        }
-                        else
-                        {
-                            type = RoomType.DOUBLE;
-                        }
-                        
-                        //Setting methods for new room
-                    }
 
-                }while(rs.next());
+                            roomNumber = rs.getString(1);
+                            roomType = rs.getString(2);
+                            price = rs.getDouble(3);
+                            status = rs.getBoolean(4);
+                            customer = rs.getString(5);
+
+
+                            if("SINGLE".equals(roomType))
+                            {
+                                type = RoomType.SINGLE;
+                            }
+                            else
+                            {
+                                type = RoomType.DOUBLE;
+                            }
+
+                            //Setting methods for new room
+
+                            rm.setRoomNumber(roomNumber);
+                            rm.setRoomType(type);
+                            rm.setPrice(price);
+                            rm.setStatus(status);
+                            rm.setCustomerByEmail(customer);
+                        }
+
+                    }while(rs.next());
+                }
+            }
+            catch(SQLException e)
+            {
+                System.out.println(e.getMessage());
             }
         }
-        catch(SQLException e)
+        else
         {
-            System.out.println(e.getMessage());
+            System.out.println("Room you are asking for does not exist.");
         }
-        
+        return rm;
         
     }
     
@@ -284,10 +289,8 @@ public class HotelDB
                             type = RoomType.DOUBLE;
                         }
                         
-                        Room room = new Room(roomNumber, type, price);
-                                
+                        Room room = new Room(roomNumber, type, price);        
                     }
-                    
                     
                 }while(rs.next());
             }
@@ -367,33 +370,13 @@ public class HotelDB
         
         try
         {
-            String sql = "SELECT * FROM ROOMS";
+            String sql = "UPDATE ROOMS SET STATUS = ?, CUSTOMER = ? WHERE ROOMNUMBER = ?";
             Statement statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery(sql);
-            PreparedStatement ps = conn.prepareStatement("UPDATE 'ROOMS' SET 'STATUS' = ? ");
-            PreparedStatement ps2 = conn.prepareStatement("UPDATE 'ROOMS' SET 'CUSTOMER' = ? ");
-           
-            if(rs.next())
-            {
-                do
-                {
-                    if(checkRoom(room))
-                    {
-                        ps.setString(4, "true");
-                        ps2.setString(5, account.getEmail());
-                        ps.executeUpdate();
-                        ps2.executeUpdate();
-             
-                        //Room has been reserved on database
-                        reserved = true;                       
-                    }
-                    else
-                    {
-                        System.out.println("Cannot reserve the Room: " +room.getRoomNumber() + " as it does not exist");
-                        reserved = false;
-                    }
-                }while(rs.next());
-            }
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setBoolean(1, true);
+            ps.setString(2, account.getEmail());
+            ps.setString(3, room.getRoomNumber());
+            ps.executeUpdate();
             
             statement.close();
         }
@@ -547,7 +530,7 @@ public class HotelDB
 
             String[] types = {"TABLE"};
             DatabaseMetaData dbmd = conn.getMetaData();
-            ResultSet rs = dbmd.getTables(null, null, null, null);//types);
+            ResultSet rs = dbmd.getTables(null, null, null, null);
             Statement statement = conn.createStatement();
             
             
@@ -557,8 +540,6 @@ public class HotelDB
                 if (tableName.compareToIgnoreCase(tablename) == 0) 
                 {
                     System.out.println(tableName + "  is there");
-                    //statement.execute("DROP TABLE " + tablename);
-                    //System.out.println("table dropped");
                     exists = true;
                     break;
                 }

@@ -11,9 +11,9 @@ package assignment2_103;
  */
 public class Room implements RoomInfo
 {
-    private final double price;
-    private final String roomNumber;
-    private final RoomType roomtype;
+    private double price;
+    private String roomNumber;
+    private RoomType roomtype;
     private boolean status = false;
     private String customer; // The customer that has booked the room
     
@@ -24,6 +24,21 @@ public class Room implements RoomInfo
         this.price = price;       
         this.status = false;
         this.customer = null;
+    }
+    
+    public void setRoomNumber(String roomnumber)
+    {
+        this.roomNumber = roomnumber;
+    }
+    
+    public void setRoomType(RoomType type)
+    {
+        this.roomtype = type;
+    }
+    
+    public void setPrice(double price)
+    {
+        this.price = price;
     }
     
     public void setStatus(boolean t)

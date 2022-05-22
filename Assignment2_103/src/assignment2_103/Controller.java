@@ -19,7 +19,7 @@ public class Controller implements ActionListener
     public Controller(ViewMain view)
     {
         this.view = view;
-        this.view.addActionListener(this);
+        //this.view.addActionListener(this);
     }
     
     

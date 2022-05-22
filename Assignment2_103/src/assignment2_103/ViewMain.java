@@ -26,7 +26,7 @@ import javax.swing.JTextField;
  *
  * @author maxhi
  */
-public class ViewMain extends JFrame implements ActionListener
+public class ViewMain extends JFrame
 {
    //All main panels
     
@@ -62,7 +62,7 @@ public class ViewMain extends JFrame implements ActionListener
     private JLabel firstnamePrompt = new JLabel("Firstname:");
     private JLabel surnamePrompt = new JLabel("Surname:");
     private JLabel emailPrompt = new JLabel("Email:");
-    private JButton confirmAccount = new JButton("Create account");
+    private JButton confirmAccountBtn = new JButton("Create account");
     
     //All components for admin menu
     
@@ -74,6 +74,7 @@ public class ViewMain extends JFrame implements ActionListener
     //Other components
     
     private JButton exitToMainBtn = new JButton("Exit to main menu");
+    private Listener L = new Listener(this);
     
     
     public ViewMain()
@@ -99,35 +100,21 @@ public class ViewMain extends JFrame implements ActionListener
         createAccountBtn.setBackground(Color.DARK_GRAY);
         createAccountBtn.setForeground(Color.WHITE);
         
-        createAccountBtn.addActionListener(new ActionListener(){
-            
-            public void actionPerformed(ActionEvent e)
-            {
-                createAccountView();
-            }
-            
-        });
+        createAccountBtn.addActionListener(L);
                
         adminBtn.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
         adminBtn.setMaximumSize(new Dimension(200, 35));
         adminBtn.setBackground(Color.DARK_GRAY);
         adminBtn.setForeground(Color.WHITE);
         
-        adminBtn.addActionListener(new ActionListener(){
-            
-            public void actionPerformed(ActionEvent e)
-            {
-                ViewAdmin();
-            }
-            
-        });
+        adminBtn.addActionListener(L);
         
         exitBtn.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
         exitBtn.setMaximumSize(new Dimension(200, 35));
         exitBtn.setBackground(Color.DARK_GRAY);
         exitBtn.setForeground(Color.WHITE);
         
-        exitBtn.addActionListener(this);
+        exitBtn.addActionListener(L);
         
         mainPanel.add(mainTitle);
         mainPanel.add(reserveRoomBtn);
@@ -168,7 +155,7 @@ public class ViewMain extends JFrame implements ActionListener
         exitToMainBtn.setMaximumSize(new Dimension(200, 35));
         exitToMainBtn.setBackground(Color.DARK_GRAY);
         exitToMainBtn.setForeground(Color.WHITE);
-        exitToMainBtn.addActionListener(this);
+        exitToMainBtn.addActionListener(L);
         
         adminPanel.add(adminTitle);
         adminPanel.add(regRoomBtn);
@@ -231,17 +218,18 @@ public class ViewMain extends JFrame implements ActionListener
         email.setBackground(Color.DARK_GRAY);
         email.setForeground(Color.WHITE);
         
-        confirmAccount.setAlignmentX(createAccountPanel.CENTER_ALIGNMENT);
-        confirmAccount.setMaximumSize(new Dimension(200, 35));
-        confirmAccount.setBackground(Color.DARK_GRAY);
-        confirmAccount.setForeground(Color.WHITE);
+        confirmAccountBtn.setAlignmentX(createAccountPanel.CENTER_ALIGNMENT);
+        confirmAccountBtn.setMaximumSize(new Dimension(200, 35));
+        confirmAccountBtn.setBackground(Color.DARK_GRAY);
+        confirmAccountBtn.setForeground(Color.WHITE);
         
         exitToMainBtn.setAlignmentX(createAccountPanel.CENTER_ALIGNMENT);
         exitToMainBtn.setMaximumSize(new Dimension(200, 35));
         exitToMainBtn.setBackground(Color.DARK_GRAY);
         exitToMainBtn.setForeground(Color.WHITE);
         
-        exitToMainBtn.addActionListener(this);
+        exitToMainBtn.addActionListener(L);
+        confirmAccountBtn.addActionListener(L);
         
         
         createAccountPanel.add(createAccountTitle);
@@ -252,7 +240,7 @@ public class ViewMain extends JFrame implements ActionListener
         createAccountPanel.add(emailPrompt);
         createAccountPanel.add(email);
         createAccountPanel.add(Box.createRigidArea(new Dimension(200, 25)));
-        createAccountPanel.add(confirmAccount);
+        createAccountPanel.add(confirmAccountBtn);
         createAccountPanel.add(Box.createRigidArea(new Dimension(200, 25)));
         createAccountPanel.add(exitToMainBtn);
         
@@ -262,47 +250,24 @@ public class ViewMain extends JFrame implements ActionListener
         this.repaint();
     }
     
-    public void actionPerformed(ActionEvent e)
-    {
-        
-        if(e.getActionCommand().equals("Exit to main menu"))
-        {
-            backToMain();
-        }
-        else if(e.getActionCommand().equals("Exit"))
-        {
-            System.out.println("Saving account to database...");
-            //Save accounts to database
-            System.out.println("System exiting.");
-            System.exit(0);
-        }
-    }
-    
-    
-    public void addActionListener(ActionListener listener)
-    {
-        //main menu listeners
-   
-       // this.reserveRoomBtn.addActionListener(listener);
-        this.createAccountBtn.addActionListener(listener);
-        this.adminBtn.addActionListener(listener);
-        this.exitBtn.addActionListener(listener);
-        
-        //admin menu listeners
-        
-        
-        this.regRoomBtn.addActionListener(listener);
-        this.displayAccountsBtn.addActionListener(listener);
-        this.displayRoomsBtn.addActionListener(listener);
-        this.exitToMainBtn.addActionListener(listener);
-    }
-    
     public void backToMain()
     {
         this.getContentPane().removeAll();
         this.getContentPane().add(mainPanel);
         this.validate();
         this.repaint();
+    }
+
+    void registerRoomView() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    void displayAccountsView() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    void displayRoomsView() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     

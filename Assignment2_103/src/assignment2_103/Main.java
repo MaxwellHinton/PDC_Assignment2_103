@@ -19,21 +19,8 @@ public class Main {
      */
     public static void main(String[] args) 
     {
-       /*HotelDBManager hoteldb = new HotelDBManager();
-       System.out.println(hoteldb.getConnection());
-       HotelDB db = new HotelDB();
-       db.createAccountsTable();
-       db.createRoomsTable();
-       Account jason = new Account("Jason", "Hinton", "jasonhinton@gmail.com");
-       Room testRoom = new Room("1", RoomType.DOUBLE, 75.50);
-       db.addAccountToTable(jason);
-       db.addRoomToTable(testRoom);
-        
-       hoteldb.closeConnections();*/
-        
        ViewMain view = new ViewMain();
        Model model = new Model();
-       //Controller control = new Controller(view);
        
     }
     
