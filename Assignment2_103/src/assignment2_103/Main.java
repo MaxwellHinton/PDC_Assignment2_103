@@ -22,6 +22,8 @@ public class Main {
        ViewMain view = new ViewMain();
        Model model = new Model();
        
+       Controller controller = new Controller(view, model);
+       
     }
     
 }

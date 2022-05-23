@@ -30,6 +30,7 @@ public class HotelDB
     private Map<String, Account> allAccounts = new HashMap<String, Account>();
     private Map<Account, Room> allReservations = new HashMap<Account, Room>();
     
+    public HotelDB(){}
     
     public void hoteldbSetup()
     {
@@ -54,35 +55,37 @@ public class HotelDB
                 statement.executeUpdate("CREATE TABLE " + roomsTable + " (ROOMNUMBER VARCHAR(10), ROOMTYPE VARCHAR(10), PRICE DOUBLE, STATUS BOOLEAN, CUSTOMER VARCHAR(40))");
                 System.out.println("Rooms table has been created successfully.");
             }
+            
+            statement.close();
 
-            allAccounts = this.getAllAccounts();
+           // allAccounts = this.getAllAccounts();
             
-            if(allAccounts.isEmpty())
-            {
-                System.out.println("Accounts table is empty");
-            }
-            else
-            {
-                for(String acc : allAccounts.keySet())
-                {
-                    System.out.println(allAccounts.get(acc).toString());
-                }
-            }
+           // if(allAccounts.isEmpty())
+          //  {
+             //   System.out.println("Accounts table is empty");
+           // }
+           // else
+          //  {
+              //  for(String acc : allAccounts.keySet())
+              //  {
+              //      System.out.println(allAccounts.get(acc).toString());
+               // }
+          //  }
             
-            allRooms = this.getAllAvailableRooms();
-            if(allRooms.isEmpty())
-            {
-                System.out.println("rooms table is empty");
-            }
-            else
-            {
-                for(String room : allRooms.keySet())
-                {
-                    System.out.println(allRooms.get(room).toString());
-                    System.out.println(allRooms.get(room).getStatus() + " CUSTOMER: " + allRooms.get(room).getCustomer());
-                    System.out.println("------------------------");
-                }
-            }
+            //allRooms = this.getAllAvailableRooms();
+            //if(allRooms.isEmpty())
+            //{
+              //  System.out.println("rooms table is empty");
+            //}
+           // else
+            //{
+               // for(String room : allRooms.keySet())
+               // {
+                //    System.out.println(allRooms.get(room).toString());
+                //    System.out.println(allRooms.get(room).getStatus() + " CUSTOMER: " + allRooms.get(room).getCustomer());
+                //    System.out.println("------------------------");
+                //}
+            //}
 
         }
             
@@ -521,7 +524,10 @@ public class HotelDB
       
         return exists;       
     }
-    
+    /*
+     *  Checks if the table exists in the database
+     *  Returns true if it does
+    */
     private boolean checkExistingTable(String tablename) //Reading function
     {
         boolean exists = false;
