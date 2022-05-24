@@ -8,6 +8,7 @@ package assignment2_103;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
 /**
  *
  * @author maxhi
@@ -58,12 +59,12 @@ public class Controller implements ActionListener
         
         if("Display all accounts".equals(e.getActionCommand()))
         {
-            view.displayAccountsView();
+            view.displayAccountsView(this.model.getAccountsJtable());
         }
         
         if("Display all rooms".equals(e.getActionCommand()))
         {
-            view.displayRoomsView();
+            view.displayRoomsView(this.model.getRoomsJtable());
         }
         
         if("Exit to main menu".equals(e.getActionCommand()))
@@ -118,8 +119,15 @@ public class Controller implements ActionListener
             
             if(firstnameCheck && surnameCheck && emailCheck)
             {
-                model.createAccount(firstname, surname, email);
-                view.accountCreationSuccess(email);
+                if(!(model.checkAccountExists(email)))
+                {
+                    model.createAccount(firstname, surname, email);
+                    view.accountCreationSuccess(email);
+                }
+                else
+                {
+                    view.accountExists(email);
+                }
             }
         }
         
@@ -170,8 +178,15 @@ public class Controller implements ActionListener
             
             if(roomNumberCheck && roomTypeCheck && roomPriceCheck)
             {
-                model.createRoom(roomNumber, roomType, roomPrice);
-                //view.accountCreationSuccess(email);
+                if(!(model.checkRoomExists(roomNumber)))
+                {
+                    model.createRoom(roomNumber, roomType, roomPrice);
+                    view.roomCreationSuccess(roomNumber);
+                }
+                else
+                {
+                    view.roomExists(roomNumber);
+                }
             }
         }
         

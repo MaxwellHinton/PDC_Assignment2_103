@@ -23,7 +23,7 @@ public class Room implements RoomInfo
         this.roomtype = roomtype;
         this.price = price;       
         this.status = false;
-        this.customer = null;
+        this.customer = "No Customer";
     }
     
     public void setRoomNumber(String roomnumber)

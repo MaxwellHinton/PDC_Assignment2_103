@@ -5,7 +5,7 @@
  */
 package assignment2_103;
 
-import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -22,8 +22,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
+
 
 /**
  *
@@ -31,6 +35,7 @@ import javax.swing.JTextField;
  */
 public class ViewMain extends JFrame
 {
+    
     //All main panels
     private JPanel mainPanel = new JPanel();        //If button gets a panel, then the GUI will refresh instead of creating new GUI.
     private JPanel reserveRoomPanel = new JPanel(); 
@@ -68,7 +73,7 @@ public class ViewMain extends JFrame
     //All components for admin menu
     private JLabel adminTitle = new JLabel("Administrator Menu");
     private JButton regRoomBtn = new JButton("Register a Room");
-    private JButton displayAccountsBtn = new JButton("Display all Accounts");
+    private JButton displayAccountsBtn = new JButton("Display all accounts");
     private JButton displayRoomsBtn = new JButton("Display all rooms");
     //Room creation components
     private JLabel regRoomTitle = new JLabel("Register a room");
@@ -81,7 +86,10 @@ public class ViewMain extends JFrame
     private JButton confirmRoomBtn = new JButton("Register room");
     //Display all accounts components
     private JLabel allAccountsTitle = new JLabel("Displaying all accounts");
-    private JTable accountsTable = new JTable();
+
+    //Display all room components
+    private JLabel allRoomsTitle = new JLabel("Displaying all rooms");
+    private JTable roomsTable = new JTable();
     
     private JButton exitToMainBtn = new JButton("Exit to main menu");
     private JButton exitToAdminBtn = new JButton("Exit to admin menu");
@@ -308,6 +316,31 @@ public class ViewMain extends JFrame
         }
     }
     
+    public void accountExists(String e)
+    {
+        JOptionPane.showMessageDialog(errorPrompt, "An account under the email:  " + e + " already exists!");
+        firstname.setText("");
+        surname.setText("");
+        email.setText("");
+    }
+    
+    public void roomExists(String e)
+    {
+        JOptionPane.showMessageDialog(errorPrompt, "A room with room number " + e + " already exists!");
+        roomNumber.setText("");
+        roomType.setText("");
+        roomPrice.setText("");
+    }
+    
+    public void roomCreationSuccess(String e)
+    {
+        JOptionPane.showMessageDialog(errorPrompt, "Room with Room number: " + e + " has been registered\n"
+                                        + "Please either register additional rooms or exit to the main menu.");
+        roomNumber.setText("");
+        roomType.setText("");
+        roomPrice.setText("");
+    }
+    
     public void accountCreationSuccess(String e)
     {
         JOptionPane.showMessageDialog(errorPrompt, "Account with email: " + e + " has been created successfully! \n"
@@ -382,18 +415,26 @@ public class ViewMain extends JFrame
         this.repaint();
     }
 
-    public void displayAccountsView() 
-    {
+    public void displayAccountsView(JScrollPane table) 
+    {         
         displayAccountsPanel.setLayout(new BoxLayout(displayAccountsPanel, BoxLayout.Y_AXIS));
         displayAccountsPanel.setBackground(Color.LIGHT_GRAY);
         
         allAccountsTitle.setFont(new Font("Serif", Font.PLAIN, 30));
         allAccountsTitle.setAlignmentX(displayAccountsPanel.CENTER_ALIGNMENT);
-        allAccountsTitle.setMaximumSize(new Dimension(200, 150));
+        allAccountsTitle.setMaximumSize(new Dimension(280, 150));
         allAccountsTitle.setForeground(Color.black);
         
+        exitToAdminBtn.setAlignmentX(displayAccountsPanel.CENTER_ALIGNMENT);
+        exitToAdminBtn.setMaximumSize(new Dimension(200, 35));
+        exitToAdminBtn.setBackground(Color.DARK_GRAY);
+        exitToAdminBtn.setForeground(Color.WHITE);
+        
         displayAccountsPanel.add(allAccountsTitle);
-        //displayAccountsPanel.add(exitToAdminBtn);
+        displayAccountsPanel.add(rigidArea);
+        displayAccountsPanel.add(table);
+        displayAccountsPanel.add(rigidArea2);
+        displayAccountsPanel.add(exitToAdminBtn);
         
         this.getContentPane().removeAll();
         this.add(displayAccountsPanel);
@@ -401,21 +442,50 @@ public class ViewMain extends JFrame
         this.repaint();
     }
 
-    void displayRoomsView() 
+
+    void displayRoomsView(JScrollPane table) 
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        displayRoomsPanel.setLayout(new BoxLayout(displayRoomsPanel, BoxLayout.Y_AXIS));
+        displayRoomsPanel.setBackground(Color.LIGHT_GRAY);
+        
+        allRoomsTitle.setFont(new Font("Serif", Font.PLAIN, 30));
+        allRoomsTitle.setAlignmentX(displayRoomsPanel.CENTER_ALIGNMENT);
+        allRoomsTitle.setMaximumSize(new Dimension(280, 150));
+        allRoomsTitle.setForeground(Color.black);
+        
+        exitToAdminBtn.setAlignmentX(displayRoomsPanel.CENTER_ALIGNMENT);
+        exitToAdminBtn.setMaximumSize(new Dimension(200, 35));
+        exitToAdminBtn.setBackground(Color.DARK_GRAY);
+        exitToAdminBtn.setForeground(Color.WHITE);
+        
+        displayRoomsPanel.add(allRoomsTitle);
+        displayRoomsPanel.add(rigidArea);
+        displayRoomsPanel.add(table);
+        displayRoomsPanel.add(rigidArea2);
+        displayRoomsPanel.add(exitToAdminBtn);
+        
+        this.getContentPane().removeAll();
+        this.add(displayRoomsPanel);
+        this.revalidate();
+        this.repaint();
     }
     
     public void addActionListener(ActionListener L)
     {
+        //Main buttons
         this.exitToMainBtn.addActionListener(L);
-        this.confirmRoomBtn.addActionListener(L);
         this.confirmAccountBtn.addActionListener(L);
         this.createAccountBtn.addActionListener(L);
+        this.exitBtn.addActionListener(L);
+        
+        //Admin buttons
+        this.confirmRoomBtn.addActionListener(L);
         this.regRoomBtn.addActionListener(L);
         this.adminBtn.addActionListener(L);
+        this.displayAccountsBtn.addActionListener(L);
+        this.displayRoomsBtn.addActionListener(L);
         this.exitToAdminBtn.addActionListener(L);
-        this.exitBtn.addActionListener(L);
+
     }
     
     public void backToAdmin() 
@@ -433,6 +503,8 @@ public class ViewMain extends JFrame
         this.validate();
         this.repaint();
     }
+    
+    
     //Getters For text boxes
     
     public JTextField getRoomNumber() {

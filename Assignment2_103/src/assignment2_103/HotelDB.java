@@ -12,8 +12,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,7 +24,7 @@ import java.util.Map;
  */
 public class HotelDB 
 {
-    private Connection conn;
+    private static Connection conn;
     private final String URL = "jdbc:derby:HotelDB;create=true";
     private final String dbusername = "hotel";
     private final String dbpassword = "hotel";
@@ -211,13 +213,9 @@ public class HotelDB
         
     }
     
-    public Map<String, Account> getAllAccounts() // Read function 3/3
-    {
-        String firstname;
-        String surname;
-        String email;
-        
-        Map<String, Account> accounts = new HashMap<String, Account>();
+    public static List<Account> getAllAccounts() // Read function 3/3
+    {        
+        List<Account> accounts = new ArrayList<Account>();
         
         try
         {
@@ -229,12 +227,12 @@ public class HotelDB
             {
                 do
                 {
-                    firstname = rs.getString("FIRSTNAME");
-                    surname = rs.getString("SURNAME");
-                    email = rs.getString("EMAIL");
+                    Account acc = new Account();
                     
-                    Account acc = new Account(firstname, surname, email);
-                    accounts.put(email, acc);
+                    acc.setFirstname(rs.getString("FIRSTNAME"));
+                    acc.setSurname(rs.getString("SURNAME"));
+                    acc.setEmail(rs.getString("EMAIL"));
+                    accounts.add(acc);
                     
                 }while(rs.next());
             }
@@ -395,26 +393,19 @@ public class HotelDB
     {        
         try
         {
-            if(!checkRoom(room))
-            {
-            
-                String sql = "INSERT INTO ROOMS(ROOMNUMBER, ROOMTYPE, PRICE, STATUS, CUSTOMER)" + "VALUES(?,?,?,?,?)";
 
-                PreparedStatement st = conn.prepareStatement(sql);
-                st.setString(1, room.getRoomNumber());
-                st.setString(2, room.getRoomType().name());
-                st.setDouble(3, room.getPrice());
-                st.setBoolean(4, room.getStatus());
-                st.setString(5, room.getCustomer());
-                st.executeUpdate();
+            String sql = "INSERT INTO ROOMS(ROOMNUMBER, ROOMTYPE, PRICE, STATUS, CUSTOMER)" + "VALUES(?,?,?,?,?)";
 
-                System.out.println("Room number: " + room.getRoomNumber() +" has been added successfully!");
-            }
-            else
-            {
-                System.out.println("Room:" + room.getRoomNumber() + " already exists");
-            }
-            
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, room.getRoomNumber());
+            st.setString(2, room.getRoomType().name());
+            st.setDouble(3, room.getPrice());
+            st.setBoolean(4, room.getStatus());
+            st.setString(5, room.getCustomer());
+            st.executeUpdate();
+
+            System.out.println("Room number: " + room.getRoomNumber() +" has been added successfully!");
+ 
         }
         catch(SQLException e)
         {
