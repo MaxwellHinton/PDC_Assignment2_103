@@ -15,6 +15,8 @@ public class Account implements AccountInfo
     private String surname;
     private String email;
     
+    public Account(){}
+    
     public Account(final String firstname, final String lastname, final String email)
     {
         this.firstName = firstname;

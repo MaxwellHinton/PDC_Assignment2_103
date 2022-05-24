@@ -6,8 +6,13 @@
 package assignment2_103;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
 
 /**
  *
@@ -21,20 +26,20 @@ public class Model extends Observable
     private Map<String, Room> rooms = new HashMap<String, Room>();
     private Map<String, Account> accounts = new HashMap<String, Account>();
     
+    private AccountsTable accTable;
+    private JScrollPane accountTableScrollPane;
     
+    private RoomsTable roomTable;
+    private JScrollPane roomTableScrollPane;
+       
     public Model()
     {
         this.db = new HotelDB();
         this.db.hoteldbSetup();
-    }
-    
-    public void checkAccount(Account acc)
-    {
-        if(db.checkAccount(acc))
-        {
-            //
-        }
-        
+        this.accTable = new AccountsTable();
+        this.roomTable = new RoomsTable();
+        this.accountTableScrollPane = new JScrollPane(this.accTable.getAccTable());
+        this.roomTableScrollPane = new JScrollPane(this.roomTable.getRoomTable());
     }
     /*
      *  Checks if the input is not null and only letters.
@@ -66,34 +71,24 @@ public class Model extends Observable
     public boolean checkPrice(String input)
     {
         boolean flag = true;
-        char c;
         
-        if(input.length() != 0)
+        if(!(input.length() != 0))
         {
-            if(checkSpecialChars(input))
-            {
-                flag = false;
-                
-                if(input.matches(".*[0-9].*")) //check for numbers
-                {
-                    try
-                    {
-                        double d = Double.parseDouble(input);
-                    }
-                    catch(NumberFormatException e)
-                    {
-                        flag = false;
-                    }
-                }
-            }
-            else
-            {
-                flag = false;
-            }
+            return false;
         }
-        else
+        
+        if(!(input.matches(".*[0-9].*")))
         {
-            flag = false;
+            return false;
+        }
+        
+        try
+        {
+            Double d = Double.parseDouble(input);
+        }
+        catch(NumberFormatException e)
+        {
+            return false;
         }
         
         return flag;
@@ -136,7 +131,39 @@ public class Model extends Observable
 
         return flag;
         
-    }    
+    }
+    /*
+     *
+     *
+    */
+    public boolean checkRoomExists(String roomNumber)
+    {
+        if(rooms.containsKey(roomNumber))
+        {
+            System.out.println("room already exists bozo");
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    public boolean checkAccountExists(String email)
+    {
+        if(accounts.containsKey(email))
+        {
+            System.out.println("account already exists retard");
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    
+    
     /*
      * Checks if the room number entered is a number.
      * Returns true if room number is a number
@@ -144,36 +171,24 @@ public class Model extends Observable
     public boolean checkRoomNumber(String input)
     {
         boolean flag = true;
-        char c;
         
-
-        if(input.length() != 0)
+        if(!(input.length() != 0))
         {
-            if(checkSpecialChars(input))
-            {
-                flag = false;
-                
-                if(input.matches(".*[0-9].*")) //check for numbers
-                {
-                    try
-                    {
-                        int i = Integer.parseInt(input);
-                    }
-                    catch(NumberFormatException e)
-                    {
-                        flag = false;
-                    }
-                }
-                
-            }
-            else
-            {
-                flag = false;
-            }
+            return false;
         }
-        else
+        
+        if(!(input.matches(".*[0-9].*")))
         {
-            flag = false;
+            return false;
+        }
+        
+        try
+        {
+            int i = Integer.parseInt(input);
+        }
+        catch(NumberFormatException e)
+        {
+            return false;
         }
         
         return flag;
@@ -240,29 +255,31 @@ public class Model extends Observable
     {
         
     }
-    
-    private void getAllRooms()
+    /*
+     *  Returns the account table inside of its scrollpane
+     *
+    */    
+    public JScrollPane getAccountsJtable()
     {
-        rooms = db.getAllAvailableRooms();
-        
-        if(rooms.isEmpty())
-        {
-            System.out.println("No rooms are in the system.");
-        }
+        return this.accountTableScrollPane;
+    }
+    
+    public JScrollPane getRoomsJtable()
+    {
+        return this.roomTableScrollPane;
     }
 
     public void createAccount(String firstname, String surname, String email) 
     {
         Account acc = new Account(firstname, surname, email);
-        
+       
         accounts.put(email, acc);
         db.addAccountToDB(acc);
+        accTable.addAccountToTable(acc);
         
         System.out.println((db.getAccountDB(acc).toString()));
-        
-        
     }
-
+    
     public void createRoom(String roomNumber, String roomType, String roomPrice) 
     {
         RoomType type;
@@ -281,6 +298,7 @@ public class Model extends Observable
         
         rooms.put(roomNumber, room);
         db.addRoomToDB(room);
+        roomTable.addRoomToTable(room);
         
         System.out.println((db.getRoomDB(room)).toString());
 
