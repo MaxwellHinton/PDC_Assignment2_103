@@ -43,8 +43,8 @@ public class HotelDB
             String accountsTable = "ACCOUNTS";
             String roomsTable = "ROOMS";
             
-            statement.executeUpdate("DROP TABLE ROOMS");
-            statement.executeUpdate("DROP TABLE ACCOUNTS");
+            //statement.executeUpdate("DROP TABLE ROOMS");
+            //statement.executeUpdate("DROP TABLE ACCOUNTS");
             //Make Accounts table if doesnt exist
             if (!checkExistingTable(accountsTable)) 
             {
@@ -95,6 +95,56 @@ public class HotelDB
         {
             System.out.println(e.getMessage());
         }
+    }
+    
+    public Account getAccountDBEmail(String e)
+    {
+        String firstname;
+        String surname;
+        String email;
+        Account acc = new Account(null, null, null);
+                
+        if(checkAccountEmail(e))
+        {
+            try
+            {
+                String sql = "SELECT * FROM ACCOUNTS";
+                Statement statement = conn.createStatement();
+                ResultSet rs = statement.executeQuery(sql);
+                
+                if(rs.next())
+                {
+                    do
+                    {
+                        if(e.equals(rs.getString(3)))
+                        {
+                            firstname = rs.getString(1);
+                            surname = rs.getString(2);
+                            email = rs.getString(3);
+
+                            acc.setFirstname(firstname);
+                            acc.setSurname(surname);
+                            acc.setEmail(email);
+
+                            break;
+                        }
+
+                    }while(rs.next());
+                }
+
+                statement.close();
+            }
+            catch(SQLException ex)
+            {
+                System.out.println(ex.getMessage());
+            }
+        }
+        else
+        {
+            System.out.println("Account you are asking for does not exist");
+        }
+        
+        return acc;
     }
     
     public Account getAccountDB(Account account)
@@ -441,9 +491,37 @@ public class HotelDB
         }
     }
     
+    public boolean checkAccountEmail(String email)
+    {   
+        try
+        {
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM ACCOUNTS");
+            
+            if(rs.next())
+            {
+                do
+                {
+                    if(rs.getString("EMAIL").equals(email))
+                    {
+                        return true;
+                    }
+                }while(rs.next());
+            }
+            
+            statement.close();
+        }
+        catch(SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }
+        
+        return false;
+                
+    }
+    
     public boolean checkAccount(Account account) // Read function 1/3
     {
-        boolean exists = false;
         String email = account.getEmail();
         
         try
@@ -458,15 +536,14 @@ public class HotelDB
                     if(rs.getString("EMAIL").equals(email))
                     {
                         // Account does exist
-                        exists = true;
-                        break;
+                        return true;
                     }
                 }while(rs.next());
             }
             else
             {
                 //Account does not exist
-                exists = false;
+                return false;
             }
             
             statement.close();
@@ -476,7 +553,7 @@ public class HotelDB
             System.out.println(e.getMessage());
         }
    
-        return exists;
+        return false;
     }
     
     public boolean checkRoom(Room room) //Read function 2/3

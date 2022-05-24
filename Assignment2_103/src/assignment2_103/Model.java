@@ -6,19 +6,16 @@
 package assignment2_103;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Observable;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
+
 
 
 /**
  *
  * @author maxhi
  */
-public class Model extends Observable
+public class Model
 {
     public HotelDB db;
     public String email;
@@ -133,14 +130,13 @@ public class Model extends Observable
         
     }
     /*
-     *
+     * Returns true if the room exists via the rooms Map
      *
     */
     public boolean checkRoomExists(String roomNumber)
     {
         if(rooms.containsKey(roomNumber))
         {
-            System.out.println("room already exists bozo");
             return true;
         }
         else
@@ -149,11 +145,10 @@ public class Model extends Observable
         }
     }
     
-    public boolean checkAccountExists(String email)
+    public boolean checkAccountExistsEmail(String email)
     {
         if(accounts.containsKey(email))
         {
-            System.out.println("account already exists retard");
             return true;
         }
         else
@@ -161,9 +156,21 @@ public class Model extends Observable
             return false;
         }
     }
-    
-    
-    
+    /*
+     * Returns true if the account exists via the accounts Map
+     *
+    */
+    public boolean checkAccountExists(Account account)
+    {
+        if(db.checkAccount(account))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     /*
      * Checks if the room number entered is a number.
      * Returns true if room number is a number
@@ -267,6 +274,11 @@ public class Model extends Observable
     public JScrollPane getRoomsJtable()
     {
         return this.roomTableScrollPane;
+    }
+    
+    public Account getAccount(String email)
+    {
+        return accounts.get(email);
     }
 
     public void createAccount(String firstname, String surname, String email) 

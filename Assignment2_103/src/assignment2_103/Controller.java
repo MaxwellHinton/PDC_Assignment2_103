@@ -18,6 +18,9 @@ public class Controller implements ActionListener
     private final ViewMain view;
     private final Model model;
     
+    private AdminView adminView;
+    private AdminModel adminModel;
+    
     public Controller(ViewMain view, Model model)
     {
         this.view = view;
@@ -32,22 +35,49 @@ public class Controller implements ActionListener
         
         if("Reserve a room".equals(e.getActionCommand()))
         {
-            view.reserveRoomView();
+            view.loginView();
+            
+            //view.reserveRoomView();
         }
         
-        if("Create an Account".equals(e.getActionCommand()))
+        if("Create an account".equals(e.getActionCommand()))
         {
             view.createAccountView();
         }
         
         if("Administrator Menu".equals(e.getActionCommand()))
         {
-            view.ViewAdmin();
+            
+            this.adminView = new AdminView();
+            this.adminModel = new AdminModel();
+            
+            AdminController adminControl = new AdminController(this.adminView, this.adminModel);
+            
+            //view.ViewAdmin();
         }
         
         if("Exit".equals(e.getActionCommand()))
         {
             System.exit(0);
+        }
+        
+        //Login buttons
+        
+        if("Login".equals(e.getActionCommand()))
+        {
+            String email = view.getEmailLogin().getText();
+            Account acc;
+            
+            if(model.db.checkAccountEmail(email))
+            {
+                acc = model.db.getAccountDBEmail(email);
+                
+                view.reserveRoomView(acc.getFirstname());
+            }
+            else
+            {
+                view.loginFailed();
+            }
         }
         
         //Admin menu buttons
@@ -119,7 +149,7 @@ public class Controller implements ActionListener
             
             if(firstnameCheck && surnameCheck && emailCheck)
             {
-                if(!(model.checkAccountExists(email)))
+                if(!(model.db.checkAccountEmail(email)))
                 {
                     model.createAccount(firstname, surname, email);
                     view.accountCreationSuccess(email);

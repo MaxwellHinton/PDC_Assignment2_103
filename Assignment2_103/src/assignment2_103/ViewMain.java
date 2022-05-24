@@ -8,13 +8,9 @@ package assignment2_103;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -25,8 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
+
 
 
 /**
@@ -39,6 +34,7 @@ public class ViewMain extends JFrame
     //All main panels
     private JPanel mainPanel = new JPanel();        //If button gets a panel, then the GUI will refresh instead of creating new GUI.
     private JPanel reserveRoomPanel = new JPanel(); 
+    private JPanel loginPanel = new JPanel();
     private JPanel createAccountPanel = new JPanel();
     
     //All Admin panels
@@ -52,13 +48,22 @@ public class ViewMain extends JFrame
     
     //All components for main menu
     private JLabel mainTitle = new JLabel("Welcome to the Hotel Reservation System");
-    private JButton createAccountBtn = new JButton("Create an Account");
+    private JButton createAccountBtn = new JButton("Create an account");
     private JButton reserveRoomBtn = new JButton("Reserve a room");
     private JButton adminBtn = new JButton("Administrator Menu");
     private JButton exitBtn = new JButton("Exit");
+    
+    //All components for login panel
+    private JLabel loginTitle = new JLabel("Login...");
+    private JLabel loginInstructions = new JLabel("Please enter your account email that you wish to use below:");
+    private JButton login = new JButton("Login");
+    private JButton createAccountAtLogin = new JButton("Create an account");
+    private JTextField emailLogin = new JTextField();
+    
     //Room Reservation components
-    private JLabel reserveRoomTitle = new JLabel("Reserving a room");
-    //private static final Map<String, Room> rooms = new HashMap<String, Room>();
+    private JLabel reserveRoomTitle = new JLabel("Reserve a room");
+    private JLabel currentUser = new JLabel("");
+    private JLabel reserveInstructions = new JLabel("Please select a room to reserve");
     
     //Account Creation components   
     private JLabel createAccountTitle = new JLabel("Create your account");
@@ -91,9 +96,11 @@ public class ViewMain extends JFrame
     private JLabel allRoomsTitle = new JLabel("Displaying all rooms");
     private JTable roomsTable = new JTable();
     
+    //Exit buttons
     private JButton exitToMainBtn = new JButton("Exit to main menu");
     private JButton exitToAdminBtn = new JButton("Exit to admin menu");
     
+    //Invisible boxes
     private Component rigidArea = Box.createRigidArea(new Dimension(200, 25));
     private Component rigidArea2 = Box.createRigidArea(new Dimension(200, 25));
     
@@ -185,14 +192,97 @@ public class ViewMain extends JFrame
         this.repaint();
         
     }
-    
-    public void reserveRoomView()
+    /*
+     * The login panel only asks for an email.
+     * Passwords are not implemented
+     *
+    */
+    public void loginView()
     {
-        reserveRoomPanel.setLayout(new BoxLayout(createAccountPanel, BoxLayout.Y_AXIS));
+        loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS));
+        loginPanel.setBackground(Color.LIGHT_GRAY);
+        
+        loginTitle.setFont(new Font("Serif", Font.PLAIN, 30));
+        loginTitle.setAlignmentX(loginPanel.CENTER_ALIGNMENT);
+        loginTitle.setMaximumSize(new Dimension(100, 150));
+        loginTitle.setForeground(Color.black);
+        
+        loginInstructions.setAlignmentX(loginPanel.CENTER_ALIGNMENT);
+        loginInstructions.setMaximumSize(new Dimension(340, 35));
+        loginInstructions.setForeground(Color.BLACK);        
+                
+        emailLogin.setAlignmentX(loginPanel.CENTER_ALIGNMENT);
+        emailLogin.setMaximumSize(new Dimension(200, 35));
+        emailLogin.setBackground(Color.DARK_GRAY);
+        emailLogin.setForeground(Color.WHITE);
+        
+        login.setAlignmentX(loginPanel.CENTER_ALIGNMENT);
+        login.setMaximumSize(new Dimension(200, 35));
+        login.setBackground(Color.DARK_GRAY);
+        login.setForeground(Color.WHITE);
+        
+        createAccountAtLogin.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
+        createAccountAtLogin.setMaximumSize(new Dimension(200, 35));
+        createAccountAtLogin.setBackground(Color.DARK_GRAY);
+        createAccountAtLogin.setForeground(Color.WHITE);
+        
+        exitToMainBtn.setAlignmentX(loginPanel.CENTER_ALIGNMENT);
+        exitToMainBtn.setMaximumSize(new Dimension(200, 35));
+        exitToMainBtn.setBackground(Color.DARK_GRAY);
+        exitToMainBtn.setForeground(Color.WHITE);
+        
+        loginPanel.add(loginTitle);
+        loginPanel.add(loginInstructions);
+        loginPanel.add(emailLogin);
+        loginPanel.add(rigidArea);
+        loginPanel.add(login);
+        loginPanel.add(rigidArea2);
+        loginPanel.add(createAccountAtLogin);
+        loginPanel.add(exitToMainBtn);
+
+        this.getContentPane().removeAll();
+        this.add(loginPanel);
+        this.revalidate();
+        this.repaint();
+    }
+    
+    public void reserveRoomView(String e)
+    {
+        reserveRoomPanel.setLayout(new BoxLayout(reserveRoomPanel, BoxLayout.Y_AXIS));
         reserveRoomPanel.setBackground(Color.LIGHT_GRAY);
         
         
         
+        reserveRoomTitle.setFont(new Font("Serif", Font.PLAIN, 30));
+        reserveRoomTitle.setAlignmentX(reserveRoomPanel.CENTER_ALIGNMENT);
+        reserveRoomTitle.setMaximumSize(new Dimension(200, 150));
+        reserveRoomTitle.setForeground(Color.black);
+        
+        currentUser.setText("Welcome " + e + "!");
+        currentUser.setFont(new Font("Serif", Font.PLAIN, 20));
+        currentUser.setAlignmentX(reserveRoomPanel.CENTER_ALIGNMENT);
+        currentUser.setMaximumSize(new Dimension(200, 35));
+        currentUser.setForeground(Color.black);
+        
+        reserveInstructions.setFont(new Font("Serif", Font.PLAIN, 15));
+        reserveInstructions.setAlignmentX(reserveRoomPanel.CENTER_ALIGNMENT);
+        reserveInstructions.setMaximumSize(new Dimension(200, 35));
+        reserveInstructions.setForeground(Color.black);
+        
+        exitToMainBtn.setAlignmentX(reserveRoomPanel.CENTER_ALIGNMENT);
+        exitToMainBtn.setMaximumSize(new Dimension(200, 35));
+        exitToMainBtn.setBackground(Color.DARK_GRAY);
+        exitToMainBtn.setForeground(Color.WHITE);
+        
+        reserveRoomPanel.add(reserveRoomTitle);
+        reserveRoomPanel.add(currentUser);
+        reserveRoomPanel.add(reserveInstructions);
+        reserveRoomPanel.add(exitToMainBtn);
+
+        this.getContentPane().removeAll();
+        this.add(reserveRoomPanel);
+        this.revalidate();
+        this.repaint();
     }
     
     public void createAccountView()
@@ -281,75 +371,6 @@ public class ViewMain extends JFrame
         this.repaint();
     }
     
-    public void incorrectInput(JTextField field)
-    {
-        if(field.equals(firstname))
-        {
-            JOptionPane.showMessageDialog(errorPrompt, "Firstname cannot be left empty, or contain numbers/special characters !");
-            firstname.setText("");
-            
-        }
-        else if(field.equals(surname))
-        {
-            JOptionPane.showMessageDialog(errorPrompt, "Surname cannot be left empty, or contain numbers/special characters !");
-            surname.setText("");
-        }
-        else if(field.equals(email))
-        {
-            JOptionPane.showMessageDialog(errorPrompt, "Email cannot be left empty");
-            email.setText("");
-        }
-        else if(field.equals(roomNumber))
-        {
-            JOptionPane.showMessageDialog(errorPrompt, "Room number has to be an integer e.g. 4");
-            roomNumber.setText("");
-        }
-        else if(field.equals(roomType))
-        {
-            JOptionPane.showMessageDialog(errorPrompt, "Room Type has to be either \"single\" or \"double\"");
-            roomType.setText("");
-        }
-        else if(field.equals(roomPrice))
-        {
-            JOptionPane.showMessageDialog(errorPrompt, "The price has to be a double e.g. 75.00");
-            roomPrice.setText("");
-        }
-    }
-    
-    public void accountExists(String e)
-    {
-        JOptionPane.showMessageDialog(errorPrompt, "An account under the email:  " + e + " already exists!");
-        firstname.setText("");
-        surname.setText("");
-        email.setText("");
-    }
-    
-    public void roomExists(String e)
-    {
-        JOptionPane.showMessageDialog(errorPrompt, "A room with room number " + e + " already exists!");
-        roomNumber.setText("");
-        roomType.setText("");
-        roomPrice.setText("");
-    }
-    
-    public void roomCreationSuccess(String e)
-    {
-        JOptionPane.showMessageDialog(errorPrompt, "Room with Room number: " + e + " has been registered\n"
-                                        + "Please either register additional rooms or exit to the main menu.");
-        roomNumber.setText("");
-        roomType.setText("");
-        roomPrice.setText("");
-    }
-    
-    public void accountCreationSuccess(String e)
-    {
-        JOptionPane.showMessageDialog(errorPrompt, "Account with email: " + e + " has been created successfully! \n"
-                                                    + "Please either create another account or exit to the main menu.");
-        firstname.setText("");
-        surname.setText("");
-        email.setText("");
-    }
-
     public void registerRoomView() 
     {
         regRoomPanel.setLayout(new BoxLayout(regRoomPanel, BoxLayout.Y_AXIS));
@@ -442,7 +463,6 @@ public class ViewMain extends JFrame
         this.repaint();
     }
 
-
     void displayRoomsView(JScrollPane table) 
     {
         displayRoomsPanel.setLayout(new BoxLayout(displayRoomsPanel, BoxLayout.Y_AXIS));
@@ -469,14 +489,38 @@ public class ViewMain extends JFrame
         this.revalidate();
         this.repaint();
     }
-    
+     
+    public void backToAdmin() 
+    {
+       this.getContentPane().removeAll();
+       this.getContentPane().add(adminPanel);
+       this.validate();
+       this.repaint();
+    }
+
+    public void backToMain()
+    {
+        this.getContentPane().removeAll();
+        this.getContentPane().add(mainPanel);
+        this.validate();
+        this.repaint();
+    }
+    /*
+     * Adding all action listeners
+     *
+    */
     public void addActionListener(ActionListener L)
     {
         //Main buttons
-        this.exitToMainBtn.addActionListener(L);
+        this.reserveRoomBtn.addActionListener(L);
         this.confirmAccountBtn.addActionListener(L);
         this.createAccountBtn.addActionListener(L);
         this.exitBtn.addActionListener(L);
+        this.exitToMainBtn.addActionListener(L);
+        
+        //Login buttons
+        this.login.addActionListener(L);
+        this.createAccountAtLogin.addActionListener(L);
         
         //Admin buttons
         this.confirmRoomBtn.addActionListener(L);
@@ -487,26 +531,90 @@ public class ViewMain extends JFrame
         this.exitToAdminBtn.addActionListener(L);
 
     }
-    
-    public void backToAdmin() 
+    /*
+     *  Error message views
+     *
+    */
+    public void incorrectInput(JTextField field)
     {
-       this.getContentPane().removeAll();
-       this.getContentPane().add(adminPanel);
-       this.validate();
-       this.repaint();
+        if(field.equals(firstname))
+        {
+            JOptionPane.showMessageDialog(errorPrompt, "Firstname cannot be left empty, or contain numbers/special characters !");
+            firstname.setText("");
+            
+        }
+        else if(field.equals(surname))
+        {
+            JOptionPane.showMessageDialog(errorPrompt, "Surname cannot be left empty, or contain numbers/special characters !");
+            surname.setText("");
+        }
+        else if(field.equals(email))
+        {
+            JOptionPane.showMessageDialog(errorPrompt, "Email cannot be left empty");
+            email.setText("");
+        }
+        else if(field.equals(roomNumber))
+        {
+            JOptionPane.showMessageDialog(errorPrompt, "Room number has to be an integer e.g. 4");
+            roomNumber.setText("");
+        }
+        else if(field.equals(roomType))
+        {
+            JOptionPane.showMessageDialog(errorPrompt, "Room Type has to be either \"single\" or \"double\"");
+            roomType.setText("");
+        }
+        else if(field.equals(roomPrice))
+        {
+            JOptionPane.showMessageDialog(errorPrompt, "The price has to be a double e.g. 75.00");
+            roomPrice.setText("");
+        }
     }
     
-    public void backToMain()
+    public void loginFailed()
     {
-        this.getContentPane().removeAll();
-        this.getContentPane().add(mainPanel);
-        this.validate();
-        this.repaint();
+        JOptionPane.showMessageDialog(errorPrompt, "Unfortunately, that email was not found in the system.\n"
+                                                    + "Please make an account or re-enter an email");
+        email.setText("");
     }
     
     
-    //Getters For text boxes
+    public void accountExists(String e)
+    {
+        JOptionPane.showMessageDialog(errorPrompt, "An account under the email:  " + e + " already exists!");
+        firstname.setText("");
+        surname.setText("");
+        email.setText("");
+    }
     
+    public void roomExists(String e)
+    {
+        JOptionPane.showMessageDialog(errorPrompt, "A room with room number " + e + " already exists!");
+        roomNumber.setText("");
+        roomType.setText("");
+        roomPrice.setText("");
+    }
+    
+    public void roomCreationSuccess(String e)
+    {
+        JOptionPane.showMessageDialog(errorPrompt, "Room with Room number: " + e + " has been registered\n"
+                                        + "Please either register additional rooms or exit to the main menu.");
+        roomNumber.setText("");
+        roomType.setText("");
+        roomPrice.setText("");
+    }
+    
+    public void accountCreationSuccess(String e)
+    {
+        JOptionPane.showMessageDialog(errorPrompt, "Account with email: " + e + " has been created successfully! \n"
+                                                    + "Please either create another account or exit to the main menu.");
+        firstname.setText("");
+        surname.setText("");
+        email.setText("");
+    }
+    /*
+     *  Getter methods
+     *
+    */
     public JTextField getRoomNumber() {
         return roomNumber;
     }
@@ -529,6 +637,11 @@ public class ViewMain extends JFrame
 
     public JTextField getEmail() {
         return email;
+    }
+    
+    public JTextField getEmailLogin()
+    {
+        return emailLogin;
     }
     
 }
