@@ -11,19 +11,12 @@ package assignment2_103;
  */
 public class Main {
 
-    /**
-     * @param args the command line arguments
-     */
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) 
     {
-       ViewMain view = new ViewMain();
+       MainView view = new MainView();
+       AdminView admin = new AdminView();
        Model model = new Model();
-       
-       Controller controller = new Controller(view, model);
-       
+       Controller controller = new Controller(view, model, admin);
     }
     
 }

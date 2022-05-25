@@ -5,8 +5,6 @@
  */
 package assignment2_103;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.JScrollPane;
 
 
@@ -19,15 +17,12 @@ public class Model
 {
     public HotelDB db;
     public String email;
-
-    private Map<String, Room> rooms = new HashMap<String, Room>();
-    private Map<String, Account> accounts = new HashMap<String, Account>();
-    
     private AccountsTable accTable;
     private JScrollPane accountTableScrollPane;
-    
     private RoomsTable roomTable;
     private JScrollPane roomTableScrollPane;
+    private UserRoomsTable userRoomTable;
+    private JScrollPane userTableScrollPane;
        
     public Model()
     {
@@ -35,8 +30,11 @@ public class Model
         this.db.hoteldbSetup();
         this.accTable = new AccountsTable();
         this.roomTable = new RoomsTable();
+        this.userRoomTable = new UserRoomsTable();
         this.accountTableScrollPane = new JScrollPane(this.accTable.getAccTable());
         this.roomTableScrollPane = new JScrollPane(this.roomTable.getRoomTable());
+        this.userTableScrollPane = new JScrollPane(this.userRoomTable.getUserRoomsTable());
+        
     }
     /*
      *  Checks if the input is not null and only letters.
@@ -95,39 +93,32 @@ public class Model
      *  Returns true if its either single or double
     */
     public boolean checkRoomType(String input) 
-    {
-        boolean flag = false;
-        char c;
-        
+    { 
         if(input.length() != 0)
         {
             if(!(checkOnlyLetters(input)))
             {   
-                flag = false;
+                return false;
             }
             else
             {
                 switch (input) 
                 {
                     case "single":
-                        flag = true;
-                        break;
+                        return true;
+                        
                     case "double":
-                        flag = true;
-                        break;
+                        return true;
+                        
                     default:
-                        flag = false;
-                        break;
+                        return false;        
                 }
             }
         }
         else
         {
-            flag = false;
+            return false;
         }
-
-        return flag;
-        
     }
     /*
      * Returns true if the room exists via the rooms Map
@@ -135,7 +126,7 @@ public class Model
     */
     public boolean checkRoomExists(String roomNumber)
     {
-        if(rooms.containsKey(roomNumber))
+        if(db.checkRoomRoomNumber(roomNumber))
         {
             return true;
         }
@@ -147,7 +138,7 @@ public class Model
     
     public boolean checkAccountExistsEmail(String email)
     {
-        if(accounts.containsKey(email))
+        if(db.checkAccountEmail(email))
         {
             return true;
         }
@@ -177,8 +168,6 @@ public class Model
     */
     public boolean checkRoomNumber(String input)
     {
-        boolean flag = true;
-        
         if(!(input.length() != 0))
         {
             return false;
@@ -188,7 +177,6 @@ public class Model
         {
             return false;
         }
-        
         try
         {
             int i = Integer.parseInt(input);
@@ -197,16 +185,15 @@ public class Model
         {
             return false;
         }
-        
-        return flag;
+    
+        return true;
     }
     /*
      *  Checks if the input has any special characters
      *  Returns true if it does
     */
-    public static boolean checkSpecialChars(String input)
+    public boolean checkSpecialChars(String input)
     {
-        boolean flag = false;
         char c;
         String specialChars = "!@#$%&*()'+,-./:;<=>?[]^_`{|} ";
                 
@@ -216,31 +203,27 @@ public class Model
 
             if(specialChars.contains(Character.toString(c))) //check for special characters
             {
-                flag = true;
-                break;
+                return true;
             }
         }
-        return flag;
+        return false;
     }
-    
     /*
      *  Checks if the input does not contain special characters or numbers. 
      *  Returns true if it only contains letters
     */
-    public static boolean checkOnlyLetters(String input)
+    public boolean checkOnlyLetters(String input)
     {
-        boolean flag = true;
-
         if(checkSpecialChars(input)) //check for special characters
         {
-            flag = false;
+            return false;
         }
         if(input.matches(".*[0-9].*")) //check for numbers
         {
-            flag = false;
+            return false;
         }
         
-        return flag;
+        return true;
     }
     /*
     *  Checks if the email contains a string and is not null
@@ -258,34 +241,34 @@ public class Model
         }
     }
 
-    private void reserveRoom() 
+    public void reserveRoom(Account currentUser, Room room) 
     {
-        
+        room.setStatus(true);
+        room.setCustomer(currentUser);
+        db.reserveRoom(currentUser, room);
+        roomTable.update();
     }
     /*
-     *  Returns the account table inside of its scrollpane
-     *
-    */    
-    public JScrollPane getAccountsJtable()
+     * Checks if the rooms status is true on database
+     * Returns true if the room status is true (reserved)
+    */
+    public boolean checkRoomStatus(Room room)
     {
-        return this.accountTableScrollPane;
-    }
-    
-    public JScrollPane getRoomsJtable()
-    {
-        return this.roomTableScrollPane;
-    }
-    
-    public Account getAccount(String email)
-    {
-        return accounts.get(email);
+        if(db.getRoomDB(room).getStatus())
+        {
+            System.out.println("room is reserved by" +room.getCustomer());
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public void createAccount(String firstname, String surname, String email) 
     {
         Account acc = new Account(firstname, surname, email);
-       
-        accounts.put(email, acc);
+        
         db.addAccountToDB(acc);
         accTable.addAccountToTable(acc);
         
@@ -308,12 +291,24 @@ public class Model
         
         Room room = new Room(roomNumber, type, price);
         
-        rooms.put(roomNumber, room);
         db.addRoomToDB(room);
         roomTable.addRoomToTable(room);
+        userRoomTable.addRoomToTable(room);
         
         System.out.println((db.getRoomDB(room)).toString());
-
-    }
+    } 
+    /*
+     *  Getters
+     *
+    */    
+    public JScrollPane getAccountsJtable(){ return this.accountTableScrollPane; }
+    
+    public JScrollPane getRoomsJtable(){ return this.roomTableScrollPane; }
+    
+    public JScrollPane getUserRoomsJtable(){ return this.userTableScrollPane; }
+    
+    public Account getAccount(String email){ return db.getAccountDBEmail(email); }
+    
+    public Room getRoom(String roomNumber){ return db.getRoomRoomNumber(roomNumber); }
 
 }
