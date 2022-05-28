@@ -256,7 +256,6 @@ public class Model
     {
         if(db.getRoomDB(room).getStatus())
         {
-            System.out.println("room is reserved by" +room.getCustomer());
             return true;
         }
         else
