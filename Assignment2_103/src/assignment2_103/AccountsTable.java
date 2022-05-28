@@ -5,9 +5,9 @@
  */
 package assignment2_103;
 
+import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
 /**
  *
  * @author maxhi
@@ -15,16 +15,38 @@ import javax.swing.table.DefaultTableModel;
 public class AccountsTable 
 {
     private JTable accTable;
+    private List<Account> savedAccounts;
     
     public AccountsTable()
     {
-        this.accTable = new JTable(new DefaultTableModel(new Object[]{"Firstname", "Surname", "Email"}, 20));
+        this.accTable = new JTable(new DefaultTableModel(new Object[]{"Firstname", "Surname", "Email"}, 0){
+       
+            @Override 
+            public boolean isCellEditable(int row, int column)
+            {
+                return false;
+            }
+        });
+        
+        accTable.getTableHeader().setReorderingAllowed(false);
+        accTable.getTableHeader().setResizingAllowed(false);
+        
+        savedAccounts = HotelDB.getAllAccounts();
+        
+        if(!(savedAccounts.isEmpty())) //If database has entries, add them to the table
+        {
+            for(Account acc : savedAccounts)
+            {
+                addAccountToTable(acc);
+            }
+        }
     }
     
     public void addAccountToTable(Account acc)
     {
         DefaultTableModel model = (DefaultTableModel) accTable.getModel();
-        model.addRow(new Object[]{acc.getFirstname(), acc.getSurname(), acc.getEmail()});
+        model.insertRow(0, new Object[]{acc.getFirstname(), acc.getSurname(), acc.getEmail()});
+        model.fireTableDataChanged();
     }
     
     public JTable getAccTable()

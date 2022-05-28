@@ -13,11 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-
 /**
  *
  * @author maxhi
@@ -28,9 +24,6 @@ public class HotelDB
     private final String URL = "jdbc:derby:HotelDB;create=true";
     private final String dbusername = "hotel";
     private final String dbpassword = "hotel";
-    private Map<String, Room> allRooms = new HashMap<String, Room>(); 
-    private Map<String, Account> allAccounts = new HashMap<String, Account>();
-    private Map<Account, Room> allReservations = new HashMap<Account, Room>();
     
     public HotelDB(){}
     
@@ -43,8 +36,8 @@ public class HotelDB
             String accountsTable = "ACCOUNTS";
             String roomsTable = "ROOMS";
             
-            statement.executeUpdate("DROP TABLE ROOMS");
-            statement.executeUpdate("DROP TABLE ACCOUNTS");
+            //statement.executeUpdate("DROP TABLE ROOMS");
+            //statement.executeUpdate("DROP TABLE ACCOUNTS");
             //Make Accounts table if doesnt exist
             if (!checkExistingTable(accountsTable)) 
             {
@@ -56,164 +49,218 @@ public class HotelDB
             {
                 statement.executeUpdate("CREATE TABLE " + roomsTable + " (ROOMNUMBER VARCHAR(10), ROOMTYPE VARCHAR(10), PRICE DOUBLE, STATUS BOOLEAN, CUSTOMER VARCHAR(40))");
                 System.out.println("Rooms table has been created successfully.");
-            }
-            
+            }  
             statement.close();
-
-           // allAccounts = this.getAllAccounts();
-            
-           // if(allAccounts.isEmpty())
-          //  {
-             //   System.out.println("Accounts table is empty");
-           // }
-           // else
-          //  {
-              //  for(String acc : allAccounts.keySet())
-              //  {
-              //      System.out.println(allAccounts.get(acc).toString());
-               // }
-          //  }
-            
-            //allRooms = this.getAllAvailableRooms();
-            //if(allRooms.isEmpty())
-            //{
-              //  System.out.println("rooms table is empty");
-            //}
-           // else
-            //{
-               // for(String room : allRooms.keySet())
-               // {
-                //    System.out.println(allRooms.get(room).toString());
-                //    System.out.println(allRooms.get(room).getStatus() + " CUSTOMER: " + allRooms.get(room).getCustomer());
-                //    System.out.println("------------------------");
-                //}
-            //}
-
-        }
-            
+        }    
         catch (Throwable e) 
         {
             System.out.println(e.getMessage());
         }
     }
-    
+    /*
+     * Gets account from database via the email
+     *
+    */ 
+    public Account getAccountDBEmail(String e)
+    {
+        String firstname;
+        String surname;
+        String email;
+        Account acc = new Account(null, null, null);
+                
+        try
+        {
+            String sql = "SELECT * FROM ACCOUNTS";
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+
+            if(rs.next())
+            {
+                do
+                {
+                    if(e.equals(rs.getString(3)))
+                    {
+                        firstname = rs.getString(1);
+                        surname = rs.getString(2);
+                        email = rs.getString(3);
+
+                        acc.setFirstname(firstname);
+                        acc.setSurname(surname);
+                        acc.setEmail(email);
+
+                        break;
+                    }
+
+                }while(rs.next());
+            }
+
+            statement.close();
+        }
+        catch(SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+        
+        return acc;
+    }
+    /*
+     * Gets room from database via the room number
+     *
+    */ 
+    public Room getRoomRoomNumber(String number)
+    {
+        RoomType type;
+        String roomType;
+        Double price;
+        Room room = new Room(null, null, 0);
+                
+        try
+        {
+            String sql = "SELECT * FROM ROOMS";
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+
+            if(rs.next())
+            {
+                do
+                {
+                    if(number.equals(rs.getString(1)))
+                    {
+                        roomType = rs.getString(2);
+                        
+                        if("SINGLE".equals(roomType))
+                        {
+                            type = RoomType.SINGLE;
+                        }
+                        else
+                        {
+                            type = RoomType.DOUBLE;
+                        }
+
+
+                        room.setRoomNumber(rs.getString(1));
+                        room.setRoomType(type);
+                        room.setPrice(rs.getDouble(3));
+                        room.setStatus(rs.getBoolean(4));
+                        room.setCustomerByEmail(rs.getString(5));
+
+                        break;
+                    }
+
+                }while(rs.next());
+            }
+
+            statement.close();
+        }
+        catch(SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+
+        return room;
+    }
+    /*
+     * Gets account from database via the account
+     *
+    */ 
     public Account getAccountDB(Account account)
     {
         String firstname;
         String surname;
         String email;
         Account acc = new Account(null, null, null);
-        
-        if(checkAccount(account)) //Make sure acc exists
-        {
-            try
-            {
-                String sql = "SELECT * FROM ACCOUNTS";
-                Statement statement = conn.createStatement();
-                ResultSet rs = statement.executeQuery(sql);
 
-                if(rs.next())
+        try
+        {
+            String sql = "SELECT * FROM ACCOUNTS";
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+
+            if(rs.next())
+            {
+                do
                 {
-                    do
+                    if(account.getEmail().equals(rs.getString(3)))
                     {
-                        if(account.getEmail().equals(rs.getString(3)))
-                        {
-                            firstname = rs.getString(1);
-                            surname = rs.getString(2);
-                            email = rs.getString(3);
+                        firstname = rs.getString(1);
+                        surname = rs.getString(2);
+                        email = rs.getString(3);
 
-                            acc.setFirstname(firstname);
-                            acc.setSurname(surname);
-                            acc.setEmail(email);
+                        acc.setFirstname(firstname);
+                        acc.setSurname(surname);
+                        acc.setEmail(email);
 
-                            break;
-                        }
+                        break;
+                    }
 
-                    }while(rs.next());
-                }
-
-                statement.close();
+                }while(rs.next());
             }
-            catch(SQLException e)
-            {
-                System.out.println(e.getMessage());
-            }
+
+            statement.close();
         }
-        else
+        catch(SQLException e)
         {
-            System.out.println("Account you are asking for does not exist");
+            System.out.println(e.getMessage());
         }
+
         return acc;
     }
-    
+    /*
+     * Gets room from database via the room.
+     *
+    */
     public Room getRoomDB(Room room)
     {
         Room rm = new Room(null, null, 0);     
-        
-        String roomNumber;      
         RoomType type; 
         String roomType;
-        double price;
-        boolean status = false;
-        String customer;
         
-        if(checkRoom(room))
+        try
         {
-            try
+            String sql = "SELECT * FROM ROOMS";
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+
+            if(rs.next())
             {
-                String sql = "SELECT * FROM ROOMS";
-                Statement statement = conn.createStatement();
-                ResultSet rs = statement.executeQuery(sql);
-
-                if(rs.next())
+                do
                 {
-                    do
+                    if(room.getRoomNumber().equals(rs.getString(1)))
                     {
-                        if(room.getRoomNumber().equals(rs.getString(1)))
+                        roomType = rs.getString(2);
+
+                        if("SINGLE".equals(roomType))
                         {
-
-                            roomNumber = rs.getString(1);
-                            roomType = rs.getString(2);
-                            price = rs.getDouble(3);
-                            status = rs.getBoolean(4);
-                            customer = rs.getString(5);
-
-
-                            if("SINGLE".equals(roomType))
-                            {
-                                type = RoomType.SINGLE;
-                            }
-                            else
-                            {
-                                type = RoomType.DOUBLE;
-                            }
-
-                            //Setting methods for new room
-
-                            rm.setRoomNumber(roomNumber);
-                            rm.setRoomType(type);
-                            rm.setPrice(price);
-                            rm.setStatus(status);
-                            rm.setCustomerByEmail(customer);
+                            type = RoomType.SINGLE;
+                        }
+                        else
+                        {
+                            type = RoomType.DOUBLE;
                         }
 
-                    }while(rs.next());
-                }
-            }
-            catch(SQLException e)
-            {
-                System.out.println(e.getMessage());
+
+                        rm.setRoomNumber(rs.getString(1));
+                        rm.setRoomType(type);
+                        rm.setPrice(rs.getDouble(3));
+                        rm.setStatus(rs.getBoolean(4));
+                        rm.setCustomerByEmail(rs.getString(5));
+                    }
+
+                }while(rs.next());
             }
         }
-        else
+        catch(SQLException e)
         {
-            System.out.println("Room you are asking for does not exist.");
+            System.out.println(e.getMessage());
         }
-        return rm;
         
-    }
-    
-    public static List<Account> getAllAccounts() // Read function 3/3
+        return rm;
+    }     
+    /*
+     * Returns all accounts from database in a List
+     *
+    */
+    public static List<Account> getAllAccounts()
     {        
         List<Account> accounts = new ArrayList<Account>();
         
@@ -251,37 +298,32 @@ public class HotelDB
         return accounts;
     }
     
-    public Map<Account, Room> getAllReservations()
+    public static List<Room> getAllAvailableRooms()
     {
-        String roomNumber;
-        String roomType;  //RoomType enum String version
-        RoomType type; 
-        Double price;
-        Boolean status;
-        String customer;
-        
-        Map<Account, Room> reservations = new HashMap<Account, Room>();
+        List<Room> availableRooms = new ArrayList<Room>();
+        RoomType type;
         
         try
         {
             String sql = "select * from ROOMS";
             Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sql);
-            
+
             if(rs.next())
             {
                 do
                 {
-                    if(rs.getBoolean("STATUS") && (rs.getString("CUSTOMER") != null)) //Check if the records status is true & there is a customer attatched.
+                    if(!(rs.getBoolean(4)))
                     {
-                        
-                        roomNumber = rs.getString(1);
-                        roomType = rs.getString(2);
-                        price = rs.getDouble(3);
-                        status = rs.getBoolean(4);
-                        customer = rs.getString(5);
 
-                        if("SINGLE".equals(roomType))
+                        Room room = new Room(null, null, 0);
+
+                        room.setRoomNumber(rs.getString(1));
+                        room.setPrice(rs.getDouble(3));
+                        room.setStatus(rs.getBoolean(4));
+                        room.setCustomerByEmail(rs.getString(5));
+
+                        if("SINGLE".equals(rs.getString(2)))
                         {
                             type = RoomType.SINGLE;
                         }
@@ -289,33 +331,35 @@ public class HotelDB
                         {
                             type = RoomType.DOUBLE;
                         }
-                        
-                        Room room = new Room(roomNumber, type, price);        
+                        room.setRoomType(type);
+
+                        availableRooms.add(room);
                     }
                     
                 }while(rs.next());
+            }         
+            else
+            {
+                System.out.println("Records not found, Rooms table must be empty.");
             }
+            
             statement.close();
-           
         }
         catch(SQLException e)
         {
             System.out.println(e.getMessage());
         }
         
-        return reservations;
+        return availableRooms;
     }
-    
-    public Map<String, Room> getAllAvailableRooms() //Read function
-    {
-        String roomNumber;
-        String roomType;  //RoomType enum String version
-        RoomType type; 
-        Double price;
-        Boolean status;
-        String customer;
-        
-        Map<String, Room> rooms = new HashMap<String, Room>();
+    /*
+     * Returns all rooms from database in a List
+     *
+    */
+    public static List<Room> getAllRooms()
+    {  
+        List<Room> rooms = new ArrayList<Room>();
+        RoomType type;
         
         try
         {
@@ -327,13 +371,14 @@ public class HotelDB
             {
                 do
                 {
-                    roomNumber = rs.getString(1);
-                    roomType = rs.getString(2);
-                    price = rs.getDouble(3);
-                    status = rs.getBoolean(4);
-                    customer = rs.getString(5);
+                    Room room = new Room(null, null, 0);
                     
-                    if("SINGLE".equals(roomType))
+                    room.setRoomNumber(rs.getString(1));
+                    room.setPrice(rs.getDouble(3));
+                    room.setStatus(rs.getBoolean(4));
+                    room.setCustomerByEmail(rs.getString(5));
+                    
+                    if("SINGLE".equals(rs.getString(2)))
                     {
                         type = RoomType.SINGLE;
                     }
@@ -341,12 +386,9 @@ public class HotelDB
                     {
                         type = RoomType.DOUBLE;
                     }
+                    room.setRoomType(type);
                     
-                    Room room = new Room(roomNumber, type, price);
-                    room.setStatus(status);
-                    room.setCustomerByEmail(customer);
-                    
-                    rooms.put(roomNumber, room);
+                    rooms.add(room);
                     
                 }while(rs.next());
             }         
@@ -364,11 +406,12 @@ public class HotelDB
         
         return rooms;
     }
-    
-    public boolean reserveRoom(Account account, Room room) //writing function 1/3
+    /*
+     * Changes room's status to true and attatches customer
+     *
+    */ 
+    public void reserveRoom(Account account, Room room)
     {
-        boolean reserved = false;
-        
         try
         {
             String sql = "UPDATE ROOMS SET STATUS = ?, CUSTOMER = ? WHERE ROOMNUMBER = ?";
@@ -385,10 +428,11 @@ public class HotelDB
         {
             System.out.println(e.getMessage());
         }
-        
-        return reserved;
     }
-    
+    /*
+     * Adds room to database
+     *
+    */
     public void addRoomToDB(Room room) //Writing function 2/3
     {        
         try
@@ -412,8 +456,10 @@ public class HotelDB
             System.err.println(e.getMessage());
         }
     }
-
-    
+    /*
+     * Adds account to database
+     *
+    */ 
     public void addAccountToDB(Account account) //Writing function 3/3
     {
         try
@@ -440,11 +486,49 @@ public class HotelDB
             System.out.println(e.getMessage());
         }
     }
-    
-    public boolean checkAccount(Account account) // Read function 1/3
-    {
+    /*
+     * Checks if account exists in databse via email
+     *
+    */
+    public boolean checkAccountEmail(String email)
+    {   
         boolean exists = false;
+        
+        try
+        {
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM ACCOUNTS");
+            
+            if(rs.next())
+            {
+                do
+                {
+                    if(rs.getString("EMAIL").equals(email))
+                    {
+                        exists = true;
+                        break;
+                    }
+                }while(rs.next());
+            }
+            
+            statement.close();
+        }
+        catch(SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }
+        
+        return exists;
+                
+    }
+    /*
+     * Checks if account exists in databse
+     *
+    */
+    public boolean checkAccount(Account account)
+    {
         String email = account.getEmail();
+        boolean exists = false;
         
         try
         {
@@ -462,13 +546,7 @@ public class HotelDB
                         break;
                     }
                 }while(rs.next());
-            }
-            else
-            {
-                //Account does not exist
-                exists = false;
-            }
-            
+            } 
             statement.close();
         }
         catch(SQLException e)
@@ -479,7 +557,41 @@ public class HotelDB
         return exists;
     }
     
-    public boolean checkRoom(Room room) //Read function 2/3
+    public boolean checkRoomRoomNumber(String roomNumber)
+    {
+        boolean exists = false;
+        
+        try
+        {
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM ROOMS");
+            
+            if(rs.next())
+            {
+                do
+                {
+                    if(rs.getString("ROOMNUMBER").equals(roomNumber))
+                    {
+                        exists = true;
+                        break;
+                    }
+                }while(rs.next());
+            }
+            
+            statement.close();
+        }
+        catch(SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }
+        
+        return exists;
+    }
+    /*
+     * Checks if room exists in databse
+     *
+    */
+    public boolean checkRoom(Room room)
     {
         boolean exists = false;
         

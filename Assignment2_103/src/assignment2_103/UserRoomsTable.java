@@ -5,24 +5,23 @@
  */
 package assignment2_103;
 
+import java.awt.Dimension;
 import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-
 /**
  *
  * @author maxhi
  */
-public class RoomsTable 
+public class UserRoomsTable 
 {
     private JTable roomsTable;
     private List<Room> savedRooms;
     
-    public RoomsTable()
+    public UserRoomsTable()
     {
-        this.roomsTable = new JTable(new DefaultTableModel(new Object[] {"Room Number", "Room type", "Price", "Status", "Customer"}, 0){
-            
+        this.roomsTable = new JTable(new DefaultTableModel(new Object[] {"Room Number", "Room type", "Price"}, 0){
+ 
             @Override 
             public boolean isCellEditable(int row, int column)
             {
@@ -31,10 +30,9 @@ public class RoomsTable
         });
         
         roomsTable.getTableHeader().setReorderingAllowed(false);
-        roomsTable.getTableHeader().setResizingAllowed(false);   
-        roomsTable.getColumnModel().getColumn(4).setMinWidth(180);
-     
-        savedRooms = HotelDB.getAllRooms();
+        roomsTable.getTableHeader().setResizingAllowed(false);
+        
+        savedRooms = HotelDB.getAllAvailableRooms();
         
         if(!(savedRooms.isEmpty())) //If database has entries, add them to the table
         {
@@ -43,25 +41,20 @@ public class RoomsTable
                 addRoomToTable(room);
             }
         }
+        
+        roomsTable.setPreferredSize(new Dimension(150,300));
     }
-    
-
     
     public void addRoomToTable(Room room)
     {
         DefaultTableModel model = (DefaultTableModel) roomsTable.getModel();
-        model.insertRow(0, new Object[]{room.getRoomNumber(), room.getRoomType(), room.getPrice(), room.getStatus(), room.getCustomer()});
+        model.insertRow(0, new Object[]{room.getRoomNumber(), room.getRoomType(), room.getPrice()});
         model.fireTableDataChanged();
     }
     
-    public JTable getRoomTable()
+    public JTable getUserRoomsTable()
     {
         return this.roomsTable;
     }
-
-    public void update() 
-    {
-        DefaultTableModel model = (DefaultTableModel) roomsTable.getModel();
-        model.fireTableDataChanged();
-    }
+    
 }
