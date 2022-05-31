@@ -257,21 +257,6 @@ public class AdminView extends JFrame
         this.exitToMainBtn.addActionListener(L);
     }
 
-    public JTextField getRoomNumber() 
-    {  
-        return this.roomNumber;
-    }
-
-    public JTextField getRoomType() 
-    {
-        return this.roomType;
-    }
-
-    public JTextField getRoomPrice() 
-    {
-        return this.roomPrice;
-    }
-
     public void incorrectInput(JTextField field) 
     {
         if(field.equals(roomNumber))
@@ -307,5 +292,13 @@ public class AdminView extends JFrame
         roomType.setText("");
         roomPrice.setText("");
     }
-    
+    /*
+     * Getter methods
+     *
+    */
+    public JTextField getRoomNumber() { return this.roomNumber; }
+
+    public JTextField getRoomType() { return this.roomType; }
+
+    public JTextField getRoomPrice() { return this.roomPrice; }
 }

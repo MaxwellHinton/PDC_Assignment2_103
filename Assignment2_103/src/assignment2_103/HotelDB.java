@@ -20,10 +20,11 @@ import java.util.List;
  */
 public class HotelDB 
 {
-    private static Connection conn;
+    public static Connection conn;
     private final String URL = "jdbc:derby:HotelDB;create=true";
     private final String dbusername = "hotel";
     private final String dbpassword = "hotel";
+    public Statement statement;
     
     public HotelDB(){}
     
@@ -32,7 +33,7 @@ public class HotelDB
         try 
         {
             conn = DriverManager.getConnection(URL, dbusername, dbpassword);
-            Statement statement = conn.createStatement();
+            statement = conn.createStatement();
             String accountsTable = "ACCOUNTS";
             String roomsTable = "ROOMS";
             
@@ -50,11 +51,24 @@ public class HotelDB
                 statement.executeUpdate("CREATE TABLE " + roomsTable + " (ROOMNUMBER VARCHAR(10), ROOMTYPE VARCHAR(10), PRICE DOUBLE, STATUS BOOLEAN, CUSTOMER VARCHAR(40))");
                 System.out.println("Rooms table has been created successfully.");
             }  
-            statement.close();
         }    
-        catch (Throwable e) 
+        catch (SQLException e) 
         {
-            System.out.println(e.getMessage());
+               do {
+                    System.out.println("\n----- SQLException -----");
+                    System.out.println("  SQLState:   " + e.getSQLState());
+                    System.out.println("  Error Code: " + e.getErrorCode());
+                    System.out.println("  Message:    " + e.getMessage());
+                    e = e.getNextException();
+                } while (e != null);
+        }
+        finally
+        {
+            try
+            {
+                statement.close();
+            }
+            catch(SQLException e){}
         }
     }
     /*
@@ -71,7 +85,7 @@ public class HotelDB
         try
         {
             String sql = "SELECT * FROM ACCOUNTS";
-            Statement statement = conn.createStatement();
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sql);
 
             if(rs.next())
@@ -92,9 +106,11 @@ public class HotelDB
                     }
 
                 }while(rs.next());
+                
             }
 
-            statement.close();
+            try { statement.close(); } catch(SQLException ex){}
+            try { rs.close(); } catch(SQLException ex){}
         }
         catch(SQLException ex)
         {
@@ -117,7 +133,7 @@ public class HotelDB
         try
         {
             String sql = "SELECT * FROM ROOMS";
-            Statement statement = conn.createStatement();
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sql);
 
             if(rs.next())
@@ -137,7 +153,6 @@ public class HotelDB
                             type = RoomType.DOUBLE;
                         }
 
-
                         room.setRoomNumber(rs.getString(1));
                         room.setRoomType(type);
                         room.setPrice(rs.getDouble(3));
@@ -149,8 +164,9 @@ public class HotelDB
 
                 }while(rs.next());
             }
-
-            statement.close();
+            
+            try { statement.close(); } catch(SQLException e){}
+            try { rs.close(); } catch(SQLException e){}
         }
         catch(SQLException ex)
         {
@@ -173,7 +189,7 @@ public class HotelDB
         try
         {
             String sql = "SELECT * FROM ACCOUNTS";
-            Statement statement = conn.createStatement();
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sql);
 
             if(rs.next())
@@ -196,7 +212,8 @@ public class HotelDB
                 }while(rs.next());
             }
 
-            statement.close();
+            try { statement.close(); } catch(SQLException e){}
+            try { rs.close(); } catch(SQLException e){}
         }
         catch(SQLException e)
         {
@@ -218,7 +235,7 @@ public class HotelDB
         try
         {
             String sql = "SELECT * FROM ROOMS";
-            Statement statement = conn.createStatement();
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sql);
 
             if(rs.next())
@@ -248,6 +265,9 @@ public class HotelDB
 
                 }while(rs.next());
             }
+            
+            try { statement.close(); } catch(SQLException e){}
+            try { rs.close(); } catch(SQLException e){}
         }
         catch(SQLException e)
         {
@@ -263,11 +283,12 @@ public class HotelDB
     public static List<Account> getAllAccounts()
     {        
         List<Account> accounts = new ArrayList<Account>();
+        Statement statement = null;
         
         try
         {
             String sql = "SELECT * FROM ACCOUNTS";
-            Statement statement = conn.createStatement();
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sql);
             
             if(rs.next())
@@ -287,17 +308,21 @@ public class HotelDB
             {
                 System.out.println("No accounts were found.");
             }
-            statement.close();
+            
+            try { statement.close(); } catch(SQLException e){}
+            try { rs.close(); } catch(SQLException e){}
         }
         catch(SQLException e)
         {
             System.out.println(e.getMessage());
-        }
+        }        
   
-        
         return accounts;
     }
-    
+    /*
+     * Returns a List of all available rooms 
+     *
+    */ 
     public static List<Room> getAllAvailableRooms()
     {
         List<Room> availableRooms = new ArrayList<Room>();
@@ -340,16 +365,17 @@ public class HotelDB
             }         
             else
             {
-                System.out.println("Records not found, Rooms table must be empty.");
+                System.out.println("Records not found, Rooms table contains 0 available rooms.");
             }
             
-            statement.close();
+            try { statement.close(); } catch(SQLException e){}
+            try { rs.close(); } catch(SQLException e){}
         }
         catch(SQLException e)
         {
             System.out.println(e.getMessage());
         }
-        
+
         return availableRooms;
     }
     /*
@@ -360,7 +386,7 @@ public class HotelDB
     {  
         List<Room> rooms = new ArrayList<Room>();
         RoomType type;
-        
+
         try
         {
             String sql = "select * from ROOMS";
@@ -394,10 +420,12 @@ public class HotelDB
             }         
             else
             {
-                System.out.println("Records not found, Rooms table must be empty.");
+                System.out.println("Records not found, Rooms table contains 0 rooms.");
             }
             
-            statement.close();
+            try { statement.close(); } catch(SQLException e){}
+            try { rs.close(); } catch(SQLException e){}
+
         }
         catch(SQLException e)
         {
@@ -411,18 +439,19 @@ public class HotelDB
      *
     */ 
     public void reserveRoom(Account account, Room room)
-    {
+    {   
         try
         {
             String sql = "UPDATE ROOMS SET STATUS = ?, CUSTOMER = ? WHERE ROOMNUMBER = ?";
-            Statement statement = conn.createStatement();
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setBoolean(1, true);
             ps.setString(2, account.getEmail());
             ps.setString(3, room.getRoomNumber());
             ps.executeUpdate();
             
-            statement.close();
+            System.out.println("Room: " + room.getRoomNumber() + " has been reserved by " + account.getEmail());
+            
+            try { ps.close(); } catch(SQLException e){}
         }
         catch(SQLException e)
         {
@@ -437,19 +466,27 @@ public class HotelDB
     {        
         try
         {
-
             String sql = "INSERT INTO ROOMS(ROOMNUMBER, ROOMTYPE, PRICE, STATUS, CUSTOMER)" + "VALUES(?,?,?,?,?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            
+            if(!checkRoom(room))
+            {
+                
+                ps.setString(1, room.getRoomNumber());
+                ps.setString(2, room.getRoomType().name());
+                ps.setDouble(3, room.getPrice());
+                ps.setBoolean(4, room.getStatus());
+                ps.setString(5, room.getCustomer());
+                ps.executeUpdate();
+            
 
-            PreparedStatement st = conn.prepareStatement(sql);
-            st.setString(1, room.getRoomNumber());
-            st.setString(2, room.getRoomType().name());
-            st.setDouble(3, room.getPrice());
-            st.setBoolean(4, room.getStatus());
-            st.setString(5, room.getCustomer());
-            st.executeUpdate();
-
-            System.out.println("Room number: " + room.getRoomNumber() +" has been added successfully!");
- 
+                System.out.println("Room number: " + room.getRoomNumber() +" has been added successfully!");
+            }
+            else
+            {
+                System.out.println("Room: " + room.getRoomNumber() + " already exists!");
+            }
+            try { ps.close(); } catch(SQLException e){}
         }
         catch(SQLException e)
         {
@@ -464,15 +501,15 @@ public class HotelDB
     {
         try
         {   
+            String sql = "INSERT INTO ACCOUNTS(FIRSTNAME, SURNAME, EMAIL) " + "VALUES(?,?,?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            
             if(!checkAccount(account))
             {
-                String sql = "INSERT INTO ACCOUNTS(FIRSTNAME, SURNAME, EMAIL) " + "VALUES(?,?,?)";
-
-                PreparedStatement st = conn.prepareStatement(sql);
-                st.setString(1, account.getFirstname());
-                st.setString(2, account.getSurname());
-                st.setString(3, account.getEmail());
-                st.executeUpdate();
+                ps.setString(1, account.getFirstname());
+                ps.setString(2, account.getSurname());
+                ps.setString(3, account.getEmail());
+                ps.executeUpdate();
 
                 System.out.println("Account with email: " +account.getEmail() +" has been added successfully.");
             }
@@ -480,6 +517,8 @@ public class HotelDB
             {
                 System.out.println("Account: " + account.getEmail() + " already exists");
             }
+            
+            try { ps.close(); } catch(SQLException e){}
         }
         catch(SQLException e)
         {
@@ -496,7 +535,7 @@ public class HotelDB
         
         try
         {
-            Statement statement = conn.createStatement();
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM ACCOUNTS");
             
             if(rs.next())
@@ -511,15 +550,16 @@ public class HotelDB
                 }while(rs.next());
             }
             
-            statement.close();
+            try { statement.close(); } catch(SQLException e){}
+            try { rs.close(); } catch(SQLException e){}
+                
         }
         catch(SQLException e)
         {
             System.out.println(e.getMessage());
         }
         
-        return exists;
-                
+        return exists;       
     }
     /*
      * Checks if account exists in databse
@@ -532,7 +572,7 @@ public class HotelDB
         
         try
         {
-            Statement statement = conn.createStatement();
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM ACCOUNTS");
             
             if(rs.next())
@@ -547,7 +587,9 @@ public class HotelDB
                     }
                 }while(rs.next());
             } 
-            statement.close();
+            
+            try { statement.close(); } catch(SQLException e){}
+            try { rs.close(); } catch(SQLException e){}
         }
         catch(SQLException e)
         {
@@ -556,14 +598,17 @@ public class HotelDB
    
         return exists;
     }
-    
+    /*
+     * Checks if the room number given exists in the databse
+     *
+    */
     public boolean checkRoomRoomNumber(String roomNumber)
     {
         boolean exists = false;
         
         try
         {
-            Statement statement = conn.createStatement();
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM ROOMS");
             
             if(rs.next())
@@ -578,7 +623,8 @@ public class HotelDB
                 }while(rs.next());
             }
             
-            statement.close();
+            try { statement.close(); } catch(SQLException e){}
+            try { rs.close(); } catch(SQLException e){}
         }
         catch(SQLException e)
         {
@@ -597,7 +643,7 @@ public class HotelDB
         
         try
         {
-            Statement statement = conn.createStatement();
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM ROOMS");
             
             if(rs.next())
@@ -618,7 +664,8 @@ public class HotelDB
                 exists = false;
             }
             
-            statement.close();
+            try { statement.close(); } catch(SQLException e){}
+            try { rs.close(); } catch(SQLException e){}
         }
         catch(SQLException e)
         {
@@ -633,6 +680,7 @@ public class HotelDB
     */
     private boolean checkExistingTable(String tablename) //Reading function
     {
+        Statement statement = null;
         boolean exists = false;
         try 
         {
@@ -640,8 +688,7 @@ public class HotelDB
             String[] types = {"TABLE"};
             DatabaseMetaData dbmd = conn.getMetaData();
             ResultSet rs = dbmd.getTables(null, null, null, null);
-            Statement statement = conn.createStatement();
-            
+            statement = conn.createStatement();
             
             while (rs.next()) 
             {
@@ -653,12 +700,8 @@ public class HotelDB
                     break;
                 }
             }
-            if (rs != null) 
-            {
-                rs.close();
-            }
-            
-            statement.close();
+            try { statement.close(); } catch(SQLException e){}
+            try { rs.close(); } catch(SQLException e){}
         } 
         catch (SQLException ex) 
         {

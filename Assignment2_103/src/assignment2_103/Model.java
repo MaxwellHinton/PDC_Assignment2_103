@@ -6,9 +6,6 @@
 package assignment2_103;
 
 import javax.swing.JScrollPane;
-
-
-
 /**
  *
  * @author maxhi
@@ -34,7 +31,6 @@ public class Model
         this.accountTableScrollPane = new JScrollPane(this.accTable.getAccTable());
         this.roomTableScrollPane = new JScrollPane(this.roomTable.getRoomTable());
         this.userTableScrollPane = new JScrollPane(this.userRoomTable.getUserRoomsTable());
-        
     }
     /*
      *  Checks if the input is not null and only letters.
@@ -135,7 +131,10 @@ public class Model
             return false;
         }
     }
-    
+    /*
+     * Returns true if the accounts exists in the database via an email input
+     *
+    */
     public boolean checkAccountExistsEmail(String email)
     {
         if(db.checkAccountEmail(email))
@@ -148,17 +147,19 @@ public class Model
         }
     }
     /*
-     * Returns true if the account exists via the accounts Map
+     * Returns true if the account exists in the database via an account input
      *
     */
     public boolean checkAccountExists(Account account)
     {
         if(db.checkAccount(account))
         {
+            System.out.println("Account does exists");
             return true;
         }
         else
         {
+            System.out.println("Account does not exist");
             return false;
         }
     }
@@ -201,7 +202,7 @@ public class Model
         {
             c = input.charAt(i);
 
-            if(specialChars.contains(Character.toString(c))) //check for special characters
+            if(specialChars.contains(Character.toString(c)))
             {
                 return true;
             }
@@ -246,7 +247,8 @@ public class Model
         room.setStatus(true);
         room.setCustomer(currentUser);
         db.reserveRoom(currentUser, room);
-        roomTable.update();
+        roomTable.updateRoom(room);
+        userRoomTable.removeRoom(room);
     }
     /*
      * Checks if the rooms status is true on database
@@ -263,7 +265,24 @@ public class Model
             return false;
         }
     }
-
+    
+    public void addAccount(Account account)
+    {
+        db.addAccountToDB(account);
+        accTable.addAccountToTable(account);
+        
+        System.out.println(db.getAccountDB(account).getEmail() + " added successfully.");
+    }
+    
+    public void addRoom(Room room)
+    {
+        db.addRoomToDB(room);
+        roomTable.addRoomToTable(room);
+        userRoomTable.addRoomToTable(room);
+        
+        System.out.println("Room:" + db.getRoomDB(room).getRoomNumber() + " added successfully.");
+    }
+    
     public void createAccount(String firstname, String surname, String email) 
     {
         Account acc = new Account(firstname, surname, email);
@@ -306,8 +325,12 @@ public class Model
     
     public JScrollPane getUserRoomsJtable(){ return this.userTableScrollPane; }
     
-    public Account getAccount(String email){ return db.getAccountDBEmail(email); }
+    public Account getAccountViaEmail(String email){ return db.getAccountDBEmail(email); }
     
-    public Room getRoom(String roomNumber){ return db.getRoomRoomNumber(roomNumber); }
+    public Account getAccount(Account acc) { return db.getAccountDB(acc); }
+    
+    public Room getRoom(Room room) { return db.getRoomDB(room); }
+    
+    public Room getRoomViaRoomNumber(String roomNumber){ return db.getRoomRoomNumber(roomNumber); }
 
 }

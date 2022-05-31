@@ -91,4 +91,26 @@ public class Room implements RoomInfo
     {
         return "Room number: " +this.roomNumber+ "\nPrice: $" +this.price+ "\nType of room: " +this.roomtype; 
     }
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null) 
+        {
+            return false;
+        }
+
+        if (obj.getClass() != this.getClass()) 
+        {
+            return false;
+        }
+
+        final Room room = (Room) obj;
+        if ((this.roomNumber == null) ? (room.roomNumber != null) : !this.roomNumber.equals(room.roomNumber)) 
+        {
+            return false;
+        }
+
+        return true;        
+    }
 }

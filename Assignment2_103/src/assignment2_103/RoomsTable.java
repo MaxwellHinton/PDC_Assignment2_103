@@ -8,7 +8,6 @@ package assignment2_103;
 import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 
 /**
  *
@@ -45,8 +44,6 @@ public class RoomsTable
         }
     }
     
-
-    
     public void addRoomToTable(Room room)
     {
         DefaultTableModel model = (DefaultTableModel) roomsTable.getModel();
@@ -58,10 +55,23 @@ public class RoomsTable
     {
         return this.roomsTable;
     }
-
-    public void update() 
+    /*
+     * Updates the room status and customer when reserved
+     *
+    */    
+    public void updateRoom(Room room)
     {
         DefaultTableModel model = (DefaultTableModel) roomsTable.getModel();
+        
+        for(int i = 0; i < model.getRowCount(); i++)
+        {
+            if(((String)model.getValueAt(i, 0)).equals(room.getRoomNumber()))
+            {
+                model.setValueAt(room.getStatus(), i, 3);
+                model.setValueAt(room.getCustomer(), i, 4);
+            }
+        }
+        
         model.fireTableDataChanged();
     }
 }

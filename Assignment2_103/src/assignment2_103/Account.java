@@ -62,4 +62,25 @@ public class Account implements AccountInfo
         return "\nFirst Name: " +this.firstName+ "\nLast Name: " +this.surname+ "\nEmail: " +this.email;
     }
     
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null) 
+        {
+            return false;
+        }
+
+        if (obj.getClass() != this.getClass()) 
+        {
+            return false;
+        }
+
+        final Account account = (Account) obj;
+        if ((this.email == null) ? (account.email != null) : !this.email.equals(account.email)) 
+        {
+            return false;
+        }
+
+        return true;        
+    }
 }

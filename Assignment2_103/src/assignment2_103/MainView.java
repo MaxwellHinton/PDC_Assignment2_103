@@ -5,30 +5,20 @@
  */
 package assignment2_103;
 
-
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.PopupMenu;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-
-
-
 /**
  *
  * @author maxhi
@@ -91,7 +81,6 @@ public class MainView extends JFrame
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBackground(Color.LIGHT_GRAY);
-        
         
         mainTitle.setFont(new Font("Calibri", Font.PLAIN, 25));
         mainTitle.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
@@ -192,7 +181,6 @@ public class MainView extends JFrame
     
     public void reserveRoomView(String e, JScrollPane table)
     {
-        
         reserveRoomPanel.setLayout(new BoxLayout(reserveRoomPanel, BoxLayout.Y_AXIS));
         reserveRoomPanel.setBackground(Color.LIGHT_GRAY);
 
@@ -228,7 +216,6 @@ public class MainView extends JFrame
         
         table.setMinimumSize(new Dimension(300, 150));
        
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(groupPanel);
         groupPanel.setLayout(layout);
         layout.setHorizontalGroup(
@@ -428,7 +415,6 @@ public class MainView extends JFrame
      *  Getter methods
      *
     */ 
-    
     public JTextField getRoomToReserve() { return roomToReserve; }
     
     public JTextField getFirstname() { return firstname; }

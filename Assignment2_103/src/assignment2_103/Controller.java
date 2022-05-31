@@ -60,8 +60,6 @@ public class Controller implements ActionListener
             String email = view.getEmailLogin().getText();
             Account acc;
             
-            
-            
             if(model.db.checkAccountEmail(email))
             {
                 acc = model.db.getAccountDBEmail(email);
@@ -86,13 +84,13 @@ public class Controller implements ActionListener
                 if(model.checkRoomExists(roomNumber))
                 {
             
-                    if(model.checkRoomStatus(model.getRoom(roomNumber))) //Just incase someone tries to enter the a room that has already been reserved
+                    if(model.checkRoomStatus(model.getRoomViaRoomNumber(roomNumber))) //Just incase someone tries to enter the a room that has already been reserved
                     {
                         view.roomIsReserved();
                     }
                     else
                     {
-                        Room room = model.getRoom(roomNumber);
+                        Room room = model.getRoomViaRoomNumber(roomNumber);
                         model.reserveRoom(currentUser, room);
                         System.out.println(room.getStatus());
                         System.out.println(room.getCustomer());

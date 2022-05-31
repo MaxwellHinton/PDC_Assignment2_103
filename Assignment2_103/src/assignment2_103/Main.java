@@ -17,6 +17,5 @@ public class Main {
        AdminView admin = new AdminView();
        Model model = new Model();
        Controller controller = new Controller(view, model, admin);
-    }
-    
+    } 
 }

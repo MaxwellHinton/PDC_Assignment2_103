@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package assignment2_103;
-
 /**
  *
  * @author maxhi

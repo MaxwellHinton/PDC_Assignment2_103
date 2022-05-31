@@ -56,5 +56,22 @@ public class UserRoomsTable
     {
         return this.roomsTable;
     }
-    
+    /*
+     * Removes room from the reserving table.
+     *
+    */
+    public void removeRoom(Room room)
+    {
+        DefaultTableModel model = (DefaultTableModel) roomsTable.getModel();
+        
+        for(int i = 0; i < model.getRowCount(); i++)
+        {
+            if(((String)model.getValueAt(i, 0)).equals(room.getRoomNumber()))
+            {
+                model.removeRow(i);
+            }
+        }
+        
+        model.fireTableDataChanged();
+    }
 }
