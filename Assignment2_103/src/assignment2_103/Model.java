@@ -243,6 +243,41 @@ public class Model
             return true;
         }
     }
+    /*
+     * Checks if the room reservation input is mathcing a room that hasnt been reserved
+     *
+    */    
+    public String checkRoomReservation(String roomNumber, Account currentUser) 
+    {
+        if(checkRoomNumber(roomNumber))
+        {
+            if(checkRoomExists(roomNumber))
+            {
+                if(checkRoomStatus(getRoomViaRoomNumber(roomNumber)))
+                {
+                    return "reserved";
+                }
+                else
+                {
+                    Room room = getRoomViaRoomNumber(roomNumber);
+                    reserveRoom(currentUser, room);
+                    System.out.println(room.getStatus());
+                    System.out.println(room.getCustomer());
+                }
+            }
+            else
+            {
+                return "invalid input";
+            }
+        }
+        else
+        {
+            return "invalid input";
+        }
+        
+        return "success";
+    }
+    
 
     public void reserveRoom(Account currentUser, Room room) 
     {
@@ -334,5 +369,6 @@ public class Model
     public Room getRoom(Room room) { return db.getRoomDB(room); }
     
     public Room getRoomViaRoomNumber(String roomNumber){ return db.getRoomRoomNumber(roomNumber); }
+
 
 }

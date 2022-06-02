@@ -100,33 +100,19 @@ public class Controller implements ActionListener
         {   
             
             String roomNumber = view.getRoomToReserve().getText();
-  
-            if(model.checkRoomNumber(roomNumber))
-            {
-                if(model.checkRoomExists(roomNumber))
-                {
+            String result = model.checkRoomReservation(roomNumber, currentUser);
             
-                    if(model.checkRoomStatus(model.getRoomViaRoomNumber(roomNumber))) //Just incase someone tries to enter the a room that has already been reserved
-                    {
-                        view.roomIsReserved();
-                    }
-                    else
-                    {
-                        Room room = model.getRoomViaRoomNumber(roomNumber);
-                        model.reserveRoom(currentUser, room);
-                        System.out.println(room.getStatus());
-                        System.out.println(room.getCustomer());
-                        view.roomReservationSuccess(roomNumber, currentUser.getEmail());
-                    }
-                }
-                else
-                {
-                    view.incorrectInput(view.getRoomToReserve());
-                }
-            }
-            else
+            switch(result)
             {
-                view.incorrectInput(view.getRoomToReserve());
+                case "success":
+                    view.roomReservationSuccess(roomNumber, currentUser.getEmail());
+                    break;
+                case "invalid input":
+                    view.incorrectInput(view.getRoomToReserve());
+                    break;
+                case "reserved":
+                    view.roomIsReserved();
+                    break;
             }
         }
         
@@ -169,8 +155,7 @@ public class Controller implements ActionListener
             String firstname = view.getFirstname().getText();
             String surname = view.getSurname().getText();
             String email = view.getEmail().getText();
-
-            
+                        
             if(model.checkAccountInput(firstname))
             {
                 firstnameCheck = true;
