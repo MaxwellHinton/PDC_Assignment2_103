@@ -25,6 +25,7 @@ public class HotelDB
     private final String dbusername = "hotel";
     private final String dbpassword = "hotel";
     public Statement statement;
+    public boolean restarted = false;
     
     public HotelDB(){}
     
@@ -37,8 +38,12 @@ public class HotelDB
             String accountsTable = "ACCOUNTS";
             String roomsTable = "ROOMS";
             
-            //statement.executeUpdate("DROP TABLE ROOMS");
-            //statement.executeUpdate("DROP TABLE ACCOUNTS");
+            if(restarted)
+            {
+                statement.executeUpdate("DROP TABLE ROOMS");
+                statement.executeUpdate("DROP TABLE ACCOUNTS");
+                restarted = false;
+            }
             //Make Accounts table if doesnt exist
             if (!checkExistingTable(accountsTable)) 
             {

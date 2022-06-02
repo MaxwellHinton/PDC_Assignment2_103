@@ -13,9 +13,9 @@ import java.awt.event.ActionListener;
  */
 public class Controller implements ActionListener
 {
-    private final MainView view;
-    private final AdminView adminView;
-    private final Model model;
+    private MainView view;
+    private AdminView adminView;
+    private Model model;
     private Account currentUser;
     
     public Controller(MainView view, Model model, AdminView admin)
@@ -53,6 +53,28 @@ public class Controller implements ActionListener
             System.exit(0);
         }
         
+        if("Restart system".equals(e.getActionCommand()))
+        {            
+            System.out.println("-------------------");
+            System.out.println("System is restarted");
+            System.out.println("-------------------");
+            
+            this.view.dispose();
+            this.adminView.dispose();
+            
+            this.view = new MainView();
+            this.adminView = new AdminView();
+            this.model = new Model();
+            this.model.restarted = true;
+            
+            this.model.ModelSetup();
+            this.view.MainViewSetup();
+            this.adminView.AdminViewSetup();
+            
+            Controller controller = new Controller(this.view, this.model, this.adminView);
+
+        }
+                
         //Login buttons
         
         if("Login".equals(e.getActionCommand()))
@@ -132,7 +154,8 @@ public class Controller implements ActionListener
         
         if("Exit to admin menu".equals(e.getActionCommand())) //Used to exit back to the admin menu
         {
-            adminView.backToAdmin();
+            adminView.reset = true;
+            adminView.AdminViewSetup();
         }
 
         //Create an Account buttons
@@ -254,7 +277,7 @@ public class Controller implements ActionListener
         
         if("Exit to main menu".equals(e.getActionCommand()))
         {
-            view.backToMain();
+            view.MainViewSetup();
         }
     }
 }

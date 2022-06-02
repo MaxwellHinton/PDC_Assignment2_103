@@ -5,6 +5,7 @@
  */
 package assignment2_103;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -42,6 +43,9 @@ public class MainView extends JFrame
     private JButton adminBtn = new JButton("Administrator Menu");
     private JButton exitBtn = new JButton("Exit");
     
+    //Restart button
+    private JButton restartSystem = new JButton("Restart system");
+    
     //All components for login panel
     private JLabel loginTitle = new JLabel("Login...");
     private JLabel loginInstructions = new JLabel("Please enter your account email that you wish to use");
@@ -71,10 +75,8 @@ public class MainView extends JFrame
     //Invisible boxes
     private Component rigidArea = Box.createRigidArea(new Dimension(200, 25));
     private Component rigidArea2 = Box.createRigidArea(new Dimension(200, 25));
-    private Component rigidArea3 = Box.createRigidArea(new Dimension(200, 50));
-    private Component rigidArea4 = Box.createRigidArea(new Dimension(200, 50));
     
-    public MainView()
+    public void MainViewSetup()
     {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(600, 600);
@@ -110,14 +112,25 @@ public class MainView extends JFrame
         exitBtn.setMaximumSize(new Dimension(200, 35));
         exitBtn.setBackground(Color.DARK_GRAY);
         exitBtn.setForeground(Color.WHITE);
+        
+        restartSystem.setFont(new Font("Calibri", Font.PLAIN, 15));
+        restartSystem.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
+        restartSystem.setMaximumSize(new Dimension(200, 35));
+        restartSystem.setBackground(Color.DARK_GRAY);
+        restartSystem.setForeground(Color.WHITE);
 
         mainPanel.add(mainTitle);
         mainPanel.add(reserveRoomBtn);
         mainPanel.add(createAccountBtn);   
         mainPanel.add(adminBtn);
         mainPanel.add(exitBtn);
-
+        mainPanel.add(rigidArea);
+        mainPanel.add(restartSystem);
+        
+        this.getContentPane().removeAll();
         this.add(mainPanel);
+        this.revalidate();
+        this.repaint();
         this.setVisible(true);     
     } 
     /*
@@ -143,8 +156,8 @@ public class MainView extends JFrame
         emailLogin.setFont(new Font("Calibri", Font.PLAIN, 15));
         emailLogin.setAlignmentX(loginPanel.CENTER_ALIGNMENT);
         emailLogin.setMaximumSize(new Dimension(200, 35));
-        emailLogin.setBackground(Color.DARK_GRAY);
-        emailLogin.setForeground(Color.WHITE);
+        emailLogin.setBackground(Color.WHITE);
+        emailLogin.setForeground(Color.DARK_GRAY);
         
         login.setFont(new Font("Calibri", Font.PLAIN, 15));
         login.setAlignmentX(loginPanel.CENTER_ALIGNMENT);
@@ -164,14 +177,21 @@ public class MainView extends JFrame
         exitToMainBtn.setBackground(Color.DARK_GRAY);
         exitToMainBtn.setForeground(Color.WHITE);
         
+        restartSystem.setFont(new Font("Calibri", Font.PLAIN, 15));
+        restartSystem.setAlignmentX(loginPanel.CENTER_ALIGNMENT);
+        restartSystem.setMaximumSize(new Dimension(200, 35));
+        restartSystem.setBackground(Color.DARK_GRAY);
+        restartSystem.setForeground(Color.WHITE);
+        
         loginPanel.add(loginTitle);
         loginPanel.add(loginInstructions);
         loginPanel.add(emailLogin);
         loginPanel.add(rigidArea);
         loginPanel.add(login);
-        loginPanel.add(rigidArea2);
         loginPanel.add(createAccountAtLogin);
         loginPanel.add(exitToMainBtn);
+        loginPanel.add(rigidArea2);
+        loginPanel.add(restartSystem);
 
         this.getContentPane().removeAll();
         this.add(loginPanel);
@@ -198,9 +218,8 @@ public class MainView extends JFrame
         roomToReserve.setFont(new Font("Calibri", Font.PLAIN, 15));
         roomToReserve.setAlignmentX(reserveRoomPanel.CENTER_ALIGNMENT);
         roomToReserve.setMaximumSize(new Dimension(200, 35));
-        roomToReserve.setBackground(Color.DARK_GRAY);
-        roomToReserve.setForeground(Color.WHITE);
-        
+        roomToReserve.setBackground(Color.WHITE);
+        roomToReserve.setForeground(Color.DARK_GRAY);
         
         reserveBtn.setFont(new Font("Calibri", Font.PLAIN, 15));
         reserveBtn.setAlignmentX(reserveRoomPanel.CENTER_ALIGNMENT);
@@ -213,6 +232,12 @@ public class MainView extends JFrame
         exitToMainBtn.setMaximumSize(new Dimension(200, 35));
         exitToMainBtn.setBackground(Color.DARK_GRAY);
         exitToMainBtn.setForeground(Color.WHITE);
+        
+        restartSystem.setFont(new Font("Calibri", Font.PLAIN, 15));
+        restartSystem.setAlignmentX(loginPanel.CENTER_ALIGNMENT);
+        restartSystem.setMaximumSize(new Dimension(200, 35));
+        restartSystem.setBackground(Color.DARK_GRAY);
+        restartSystem.setForeground(Color.WHITE);
         
         table.setMinimumSize(new Dimension(300, 150));
        
@@ -234,12 +259,14 @@ public class MainView extends JFrame
         );
         
         reserveRoomPanel.add(reserveRoomTitle);
-        reserveRoomPanel.add(rigidArea3);
+        reserveRoomPanel.add(rigidArea);
         reserveRoomPanel.add(reserveInstructions);
         reserveRoomPanel.add(roomToReserve);
         reserveRoomPanel.add(table);       
         reserveRoomPanel.add(reserveBtn);
         reserveRoomPanel.add(exitToMainBtn);
+        reserveRoomPanel.add(rigidArea2);
+        reserveRoomPanel.add(restartSystem);
         
         this.getContentPane().removeAll();
         this.add(reserveRoomPanel);
@@ -275,20 +302,20 @@ public class MainView extends JFrame
         firstname.setFont(new Font("Calibri", Font.PLAIN, 15));
         firstname.setAlignmentX(createAccountPanel.CENTER_ALIGNMENT);
         firstname.setMaximumSize(new Dimension(200, 35));
-        firstname.setBackground(Color.DARK_GRAY);
-        firstname.setForeground(Color.WHITE);
+        firstname.setBackground(Color.WHITE);
+        firstname.setForeground(Color.DARK_GRAY);
         
         surname.setFont(new Font("Calibri", Font.PLAIN, 15));
         surname.setAlignmentX(createAccountPanel.CENTER_ALIGNMENT);
         surname.setMaximumSize(new Dimension(200, 35));
-        surname.setBackground(Color.DARK_GRAY);
-        surname.setForeground(Color.WHITE);
+        surname.setBackground(Color.WHITE);
+        surname.setForeground(Color.DARK_GRAY);
         
         email.setFont(new Font("Calibri", Font.PLAIN, 15));
         email.setAlignmentX(createAccountPanel.CENTER_ALIGNMENT);
         email.setMaximumSize(new Dimension(200, 35));
-        email.setBackground(Color.DARK_GRAY);
-        email.setForeground(Color.WHITE);
+        email.setBackground(Color.WHITE);
+        email.setForeground(Color.DARK_GRAY);
         
         confirmAccountBtn.setFont(new Font("Calibri", Font.PLAIN, 15));
         confirmAccountBtn.setAlignmentX(createAccountPanel.CENTER_ALIGNMENT);
@@ -302,6 +329,12 @@ public class MainView extends JFrame
         exitToMainBtn.setBackground(Color.DARK_GRAY);
         exitToMainBtn.setForeground(Color.WHITE);
         
+        restartSystem.setFont(new Font("Calibri", Font.PLAIN, 15));
+        restartSystem.setAlignmentX(loginPanel.CENTER_ALIGNMENT);
+        restartSystem.setMaximumSize(new Dimension(200, 35));
+        restartSystem.setBackground(Color.DARK_GRAY);
+        restartSystem.setForeground(Color.WHITE);
+        
         createAccountPanel.add(createAccountTitle);
         createAccountPanel.add(firstnamePrompt);
         createAccountPanel.add(firstname);
@@ -311,26 +344,16 @@ public class MainView extends JFrame
         createAccountPanel.add(email);
         createAccountPanel.add(rigidArea);
         createAccountPanel.add(confirmAccountBtn);
-        createAccountPanel.add(rigidArea2);
         createAccountPanel.add(exitToMainBtn);
+        createAccountPanel.add(rigidArea2);
+        createAccountPanel.add(restartSystem);
         
         this.getContentPane().removeAll();
         this.add(createAccountPanel);
         this.revalidate();
         this.repaint();
     }
-    
-    public void backToMain()
-    {
-        this.getContentPane().removeAll();
-        this.getContentPane().add(mainPanel);
-        this.validate();
-        this.repaint();
-    }  
-    /*
-     * Adding all action listeners
-     *
-    */
+
     public void addActionListener(ActionListener L)
     {
         //Main buttons
@@ -340,6 +363,7 @@ public class MainView extends JFrame
         this.exitBtn.addActionListener(L);
         this.exitToMainBtn.addActionListener(L);
         this.adminBtn.addActionListener(L);
+        this.restartSystem.addActionListener(L);
         
         //Login buttons
         this.login.addActionListener(L);

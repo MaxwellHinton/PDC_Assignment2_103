@@ -20,10 +20,12 @@ public class Model
     private JScrollPane roomTableScrollPane;
     private UserRoomsTable userRoomTable;
     private JScrollPane userTableScrollPane;
+    public boolean restarted = false; //If user restarts program using button, this becomes true and drops the data tables.
        
-    public Model()
+    public void ModelSetup()
     {
         this.db = new HotelDB();
+        this.db.restarted = restarted;
         this.db.hoteldbSetup();
         this.accTable = new AccountsTable();
         this.roomTable = new RoomsTable();

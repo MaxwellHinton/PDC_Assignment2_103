@@ -25,21 +25,25 @@ import javax.swing.JTextField;
  */
 public class AdminView extends JFrame
 {
+    public boolean reset = false;
+    
     //All panels
     private JPanel adminPanel = new JPanel();
     private JPanel regRoomPanel = new JPanel();
     private JPanel displayAccountsPanel = new JPanel();
     private JPanel displayRoomsPanel = new JPanel();
     private JFrame errorPrompt = new JFrame();
-    
+     
     //Admin main components
     private JLabel adminTitle = new JLabel("Administrator Menu");
     private JButton regRoomBtn = new JButton("Register a Room");
     private JButton displayAccountsBtn = new JButton("Display all accounts");
     private JButton displayRoomsBtn = new JButton("Display all rooms");
-    
     private JButton exitToMainBtn = new JButton("Exit admin menu");
     private JButton exitToAdminBtn = new JButton("Exit to admin menu");
+    
+    //Restart button
+    private JButton restartSystem = new JButton("Restart system");
     
     //Register Room componenets
     private JLabel regRoomTitle = new JLabel("Register a room");
@@ -57,10 +61,11 @@ public class AdminView extends JFrame
     //Display rooms components
     private JLabel allRoomsTitle = new JLabel("Displaying all rooms");
     
+    //Invisible boxes
     private Component rigidArea = Box.createRigidArea(new Dimension(200, 25));
     private Component rigidArea2 = Box.createRigidArea(new Dimension(200, 25));
     
-    public AdminView()
+    public void AdminViewSetup()
     {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setSize(600, 600);
@@ -96,18 +101,26 @@ public class AdminView extends JFrame
         exitToMainBtn.setMaximumSize(new Dimension(200, 35));
         exitToMainBtn.setBackground(Color.DARK_GRAY);
         exitToMainBtn.setForeground(Color.WHITE);
+        
+        restartSystem.setFont(new Font("Calibri", Font.PLAIN, 15));
+        restartSystem.setAlignmentX(adminPanel.CENTER_ALIGNMENT);
+        restartSystem.setMaximumSize(new Dimension(200, 35));
+        restartSystem.setBackground(Color.DARK_GRAY);
+        restartSystem.setForeground(Color.WHITE);
                 
         adminPanel.add(adminTitle);
         adminPanel.add(regRoomBtn);
         adminPanel.add(displayAccountsBtn);
         adminPanel.add(displayRoomsBtn);
         adminPanel.add(exitToMainBtn);
+        adminPanel.add(rigidArea);
+        adminPanel.add(restartSystem);
         
         this.getContentPane().removeAll();
         this.add(adminPanel);
         this.revalidate();
         this.repaint();
-        this.setVisible(false);
+        this.setVisible(reset);
     }
     
     public void registerRoomView() 
@@ -165,6 +178,12 @@ public class AdminView extends JFrame
         exitToAdminBtn.setBackground(Color.DARK_GRAY);
         exitToAdminBtn.setForeground(Color.WHITE);
         
+        restartSystem.setFont(new Font("Calibri", Font.PLAIN, 15));
+        restartSystem.setAlignmentX(regRoomPanel.CENTER_ALIGNMENT);
+        restartSystem.setMaximumSize(new Dimension(200, 35));
+        restartSystem.setBackground(Color.DARK_GRAY);
+        restartSystem.setForeground(Color.WHITE);
+        
         regRoomPanel.add(regRoomTitle);
         regRoomPanel.add(numberPrompt);
         regRoomPanel.add(roomNumber);
@@ -174,8 +193,9 @@ public class AdminView extends JFrame
         regRoomPanel.add(roomPrice);
         regRoomPanel.add(rigidArea);
         regRoomPanel.add(confirmRoomBtn);
-        regRoomPanel.add(rigidArea2);
         regRoomPanel.add(exitToAdminBtn);
+        regRoomPanel.add(rigidArea2);
+        regRoomPanel.add(restartSystem);
         
         this.getContentPane().removeAll();
         this.add(regRoomPanel);
@@ -199,11 +219,18 @@ public class AdminView extends JFrame
         exitToAdminBtn.setBackground(Color.DARK_GRAY);
         exitToAdminBtn.setForeground(Color.WHITE);
         
+        restartSystem.setFont(new Font("Calibri", Font.PLAIN, 15));
+        restartSystem.setAlignmentX(displayAccountsPanel.CENTER_ALIGNMENT);
+        restartSystem.setMaximumSize(new Dimension(200, 35));
+        restartSystem.setBackground(Color.DARK_GRAY);
+        restartSystem.setForeground(Color.WHITE);
+        
         displayAccountsPanel.add(allAccountsTitle);
         displayAccountsPanel.add(rigidArea);
         displayAccountsPanel.add(table);
-        displayAccountsPanel.add(rigidArea2);
         displayAccountsPanel.add(exitToAdminBtn);
+        displayAccountsPanel.add(rigidArea2);
+        displayAccountsPanel.add(restartSystem);
         
         this.getContentPane().removeAll();
         this.add(displayAccountsPanel);
@@ -227,24 +254,23 @@ public class AdminView extends JFrame
         exitToAdminBtn.setBackground(Color.DARK_GRAY);
         exitToAdminBtn.setForeground(Color.WHITE);
         
+        restartSystem.setFont(new Font("Calibri", Font.PLAIN, 15));
+        restartSystem.setAlignmentX(displayRoomsPanel.CENTER_ALIGNMENT);
+        restartSystem.setMaximumSize(new Dimension(200, 35));
+        restartSystem.setBackground(Color.DARK_GRAY);
+        restartSystem.setForeground(Color.WHITE);
+        
         displayRoomsPanel.add(allRoomsTitle);
         displayRoomsPanel.add(rigidArea);
         displayRoomsPanel.add(table);
-        displayRoomsPanel.add(rigidArea2);
         displayRoomsPanel.add(exitToAdminBtn);
+        displayRoomsPanel.add(rigidArea2);
+        displayRoomsPanel.add(restartSystem);
         
         this.getContentPane().removeAll();
         this.add(displayRoomsPanel);
         this.revalidate();
         this.repaint();
-    }
-    
-    public void backToAdmin() 
-    {
-       this.getContentPane().removeAll();
-       this.getContentPane().add(adminPanel);
-       this.validate();
-       this.repaint();
     }
     
     public void addActionListener(ActionListener L)
@@ -255,8 +281,12 @@ public class AdminView extends JFrame
         this.displayRoomsBtn.addActionListener(L);
         this.exitToAdminBtn.addActionListener(L);
         this.exitToMainBtn.addActionListener(L);
+        this.restartSystem.addActionListener(L);
     }
-
+    /*
+     * Error message views
+     *
+    */
     public void incorrectInput(JTextField field) 
     {
         if(field.equals(roomNumber))

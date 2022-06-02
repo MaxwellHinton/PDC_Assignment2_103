@@ -31,6 +31,7 @@ public class ModelTest
     public void setUpModel() 
     {
         this.model = new Model();
+        this.model.ModelSetup();
     }
     
     @After
